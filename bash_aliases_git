@@ -52,36 +52,48 @@ gipx () {
     git push;
 }
 
-# FUTURE GIT BRANCH 1.0
+# FUTURE GIT BRANCH 2.0
 gitest () {
     action='';
     action_where='';
     pointer='';
 
+    isParameter="-\w+";
     if [[ -z "$1" ]]; then
         action='branch';
     else
         for var in "$@"
         do
-            if [[ -z $action ]]; then
-                if [[ $var = '-new' ]]; then
-                    action='checkout -b';
-                elif [[ $var = '-delete' ]]; then
-                    action=$var;
-                fi
-            elif [[ $action = '-delete' && -z $action_where ]]; then
-                if [[ $var = '-local' ]]; then
-                    action_where='-D';
-                    action="branch $action_where";
-                elif [[ $var = '-origin' ]]; then
-                    action_where="origin --delete";
-                    action="push $action_where";
+            if [[ $var =~ $isParameter ]]; then
+                if [[ -z $action ]]; then
+                    if [[ $var = '-new' ]]; then
+                        action='checkout -b';
+                    elif [[ $var = '-delete' ]]; then
+                        for deleteVar in "$@"
+                        do
+                            if [[ $deleteVar = '-local' ]]; then
+                                action_where='-D';
+                                action="branch $action_where";
+                            elif [[ $deleteVar = '-origin' ]]; then
+                                action_where="origin --delete";
+                                action="push $action_where";
+                            fi
+                        done
+
+                        if [[ -z $action ]]; then
+                            action_where='-D';
+                            action="branch $action_where";
+                        fi
+                    fi
                 fi
             elif [[ -z $pointer ]]; then
-                pointer=$var;
+                if [[ -z $action ]]; then
+                    action='checkout';
+                fi
+                pointer=" $var";
             fi
         done
     fi
 
-    echo "git $action $pointer";
+    echo "git $action$pointer;";
 }
