@@ -51,3 +51,37 @@ gipx () {
     git pull;
     git push;
 }
+
+# FUTURE GIT BRANCH 1.0
+gitest () {
+    action='';
+    action_where='';
+    pointer='';
+
+    if [[ -z "$1" ]]; then
+        action='branch';
+    else
+        for var in "$@"
+        do
+            if [[ -z $action ]]; then
+                if [[ $var = '-new' ]]; then
+                    action='checkout -b';
+                elif [[ $var = '-delete' ]]; then
+                    action=$var;
+                fi
+            elif [[ $action = '-delete' && -z $action_where ]]; then
+                if [[ $var = '-local' ]]; then
+                    action_where='-D';
+                    action="branch $action_where";
+                elif [[ $var = '-origin' ]]; then
+                    action_where="origin --delete";
+                    action="push $action_where";
+                fi
+            elif [[ -z $pointer ]]; then
+                pointer=$var;
+            fi
+        done
+    fi
+
+    echo "git $action $pointer";
+}

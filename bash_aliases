@@ -1,7 +1,7 @@
 # NOT ALIASES BUT HELPFUL ANYWAY
 # include aliases for git
-if [ -f ~/.bash_aliases_git.sh ]; then
-    . ~/.bash_aliases_git.sh
+if [ -f ~/.bash_aliases_git ]; then
+    . ~/.bash_aliases_git
 fi
 
 # for ignoring certain commands to appear on history, add colon to separate commands
@@ -28,11 +28,11 @@ alias now='date +%T';
 # edit the selected bash config file
 function editbash {
     if [[ "$1" == "a" ]]; then
-        subl ~/.bash_aliases.sh;
+        subl ~/.bash_aliases;
     elif [[ "$1" == "h" ]]; then
         subl ~/.bash_history;
     elif [[ "$1" == "g" ]]; then
-        subl ~/.bash_aliases_git.sh;
+        subl ~/.bash_aliases_git;
     #elif [[ "$1" == "f" ]]; then
     #    subl ~/.bash_functions
     else
