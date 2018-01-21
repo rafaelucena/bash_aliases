@@ -97,3 +97,22 @@ gitest () {
 
     echo "git $action$pointer;";
 }
+
+asktest () {
+    if [[ -z "$1" ]]; then
+        read -p "Checkout MASTER?" -n 1 -r
+        echo    # (optional) move to a new line
+        if [[ $REPLY =~ ^[Yy]$ ]]
+        then
+            echo 'git checkout master;'
+            echo 'git pull;'
+        fi
+    else
+        read -p "Checkout $1? [y/n]" -n 1 -r
+        echo    # (optional) move to a new line
+        if [[ $REPLY =~ ^[Yy]$ ]]
+        then
+            echo "git checkout $1 $2 $3;"
+        fi
+    fi
+}
