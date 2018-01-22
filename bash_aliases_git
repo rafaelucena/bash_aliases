@@ -55,37 +55,50 @@ gipx () {
 # FUTURE GIT BRANCH 2.0
 gitest () {
     action='';
-    action_where='';
     pointer='';
 
-    isParameter="-\w+";
+    # If we don't have any parameter, I assume we just want to see local branches
     if [[ -z "$1" ]]; then
         action='branch';
     else
+        isParameter="-\w+";
+
+        # Now, if I do have parameters, I will evaluate them one by one (IN ORDER, PLEASE)
         for var in "$@"
         do
+            # And now I check if current variable is a parameter or not
             if [[ $var =~ $isParameter ]]; then
+                # If it's a parameter, I check if my own action is empty so I won't override it
                 if [[ -z $action ]]; then
+                    # If it's -new, we create and move to the branch
                     if [[ $var = '-new' ]]; then
                         action='checkout -b';
+                    # If it's -delete, we evaluate further
                     elif [[ $var = '-delete' ]]; then
+                        action_where='';
+
+                        # Now I run the loop again to check for a more specific action
                         for deleteVar in "$@"
                         do
+                            # If it's -local, I set -D (for now) for deleting even unmerged branches
                             if [[ $deleteVar = '-local' ]]; then
                                 action_where='-D';
                                 action="branch $action_where";
+                            # If it's -origin, I set the action to use push --delete from the remote server
                             elif [[ $deleteVar = '-origin' ]]; then
                                 action_where="origin --delete";
                                 action="push $action_where";
                             fi
                         done
 
+                        # If there is no specific information about how to delete, I assume it's local -D (for now)
                         if [[ -z $action ]]; then
                             action_where='-D';
                             action="branch $action_where";
                         fi
                     fi
                 fi
+            # If it's not a parameter, then its a pointer to a branch
             elif [[ -z $pointer ]]; then
                 if [[ -z $action ]]; then
                     action='checkout';
@@ -93,9 +106,36 @@ gitest () {
                 pointer=" $var";
             fi
         done
+
+        # Now I evaluate if it's to delete or not with RegEx
+        isDelete="(-D|--delete)";
+        if [[ $action =~ $isDelete ]]; then
+            # If it's to delete, then I check if it's local or not
+            isLocal="(-D)";
+            if [[ $action =~ $isLocal ]]; then
+                # And not I show the appropriated message for local delete
+                read -p "Are you sure you want to remove$pointer locally?" -n 1 -r
+                echo    # (optional) move to a new line
+                if [[ $REPLY =~ ^[Yy]$ ]]; then
+                    true;
+                else
+                    return;
+                fi
+            else
+                # And not I show the appropriated message for REMOTE delete
+                read -p "Are you REALLY sure you want to remove$pointer FROM REMOTE?" -n 1 -r
+                echo    # (optional) move to a new line
+                if [[ $REPLY =~ ^[Yy]$ ]]; then
+                    true;
+                else
+                    return;
+                fi
+            fi
+        fi
     fi
 
     echo "git $action$pointer;";
+    #git $action$pointer;
 }
 
 asktest () {
