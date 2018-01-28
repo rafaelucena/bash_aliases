@@ -32,10 +32,20 @@ gico () {
 }
 # git diff
 gidf () {
+    action="git diff";
     if [[ -z "$1" ]]; then
-        git diff;
+        echo "$action;";
+        $action;
     else
-        git diff *$1;
+        hasExtension="(\.\w?)";
+        if [[ $1 =~ $hasExtension ]]; then
+            action="$action *$1"
+        else
+            action="$action *$1*";
+        fi
+
+        echo "$action;";
+        $action;
     fi
 }
 # git add
@@ -48,8 +58,13 @@ giad () {
 }
 # git push #up   ==>
 gipx () {
-    git pull;
-    git push;
+    action="git pull";
+    echo "$action;";
+    $action;
+
+    action="git push";
+    echo "$action;";
+    $action;
 }
 
 # FUTURE GIT BRANCH 2.0
@@ -136,23 +151,4 @@ gitest () {
 
     echo "git $action$pointer;";
     #git $action$pointer;
-}
-
-asktest () {
-    if [[ -z "$1" ]]; then
-        read -p "Checkout MASTER?" -n 1 -r
-        echo    # (optional) move to a new line
-        if [[ $REPLY =~ ^[Yy]$ ]]
-        then
-            echo 'git checkout master;'
-            echo 'git pull;'
-        fi
-    else
-        read -p "Checkout $1? [y/n]" -n 1 -r
-        echo    # (optional) move to a new line
-        if [[ $REPLY =~ ^[Yy]$ ]]
-        then
-            echo "git checkout $1 $2 $3;"
-        fi
-    fi
 }
