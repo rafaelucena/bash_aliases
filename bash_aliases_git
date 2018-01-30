@@ -1,6 +1,6 @@
 #GIT COMMANDS
 # simple aliases
-alias gibr='git branch';
+# alias gibr='git branch';
 alias gime='git merge master';
 alias gipu='git pull';  #down <==
 alias gist='git status';
@@ -37,25 +37,37 @@ gidf () {
         echo "$action;";
         $action;
     else
-        hasExtension="(\.\w?)";
-        if [[ $1 =~ $hasExtension ]]; then
-            action="$action *$1"
-        else
-            action="$action *$1*";
-        fi
+        action=$(transformGitFileAction $1);
 
         echo "$action;";
         $action;
     fi
 }
+
 # git add
 giad () {
+    action="git add";
     if [[ -z "$1" ]]; then
         echo "COMMAND INVALID! MUST HAVE AT LEAST ONE VARIABLE!";
     else
-        git add *$1;
+        action=$(transformGitFileAction $1);
+
+        echo "$action;";
+        $action;
     fi
 }
+
+transformGitFileAction () {
+    hasExtension="(\.\w?)";
+    if [[ $1 =~ $hasExtension ]]; then
+        action="$action *$1"
+    else
+        action="$action *$1*";
+    fi
+
+    echo "$action";
+}
+
 # git push #up   ==>
 gipx () {
     action="git pull";
@@ -67,8 +79,8 @@ gipx () {
     $action;
 }
 
-# FUTURE GIT BRANCH 2.0
-gitest () {
+# GIT BRANCH 2.0
+gibr () {
     action='';
     pointer='';
 
@@ -150,5 +162,5 @@ gitest () {
     fi
 
     echo "git $action$pointer;";
-    #git $action$pointer;
+    git $action$pointer;
 }
