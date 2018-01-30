@@ -164,3 +164,12 @@ gibr () {
     echo "git $action$pointer;";
     git $action$pointer;
 }
+
+gotomap () {
+    basepath=${PWD##*/};
+    basepath=${basepath,,};
+    fullpath=${PWD};
+
+    tag="<local name=\"$basepath\" path=\"$fullpath\"></local>"
+    echo "$tag";
+}
