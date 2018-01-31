@@ -41,6 +41,19 @@ function editbash {
 }
 
 goto () {
-    echo "cd ~/Projects/php/$1*";
-    cd ~/Projects/php/$1*;
+    # change this file to the place where your map file is
+    # /home/rafa/.goto_map.xml
+    gotomap='local goto_map file';
+
+    tags=($(grep -oP '(?<=tag>)[^<]+' $gotomap))
+    paths=($(grep -oP '(?<=path>)[^<]+' $gotomap))
+
+    for i in ${!tags[*]}
+    do
+        if [[ "${tags[$i]}" == "$1"* ]]; then
+            echo "cd" "${paths[$i]}" "(${tags[$i]})";
+            cd "${paths[$i]}";
+            break;
+        fi
+    done
 }
