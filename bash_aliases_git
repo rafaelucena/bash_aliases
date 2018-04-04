@@ -88,7 +88,7 @@ gibr () {
     if [[ -z "$1" ]]; then
         action='branch';
     else
-        isParameter="-\w+";
+        isParameter="^-\w+";
 
         # Now, if I do have parameters, I will evaluate them one by one (IN ORDER, PLEASE)
         for var in "$@"
