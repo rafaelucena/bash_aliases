@@ -117,7 +117,7 @@ gibr () {
     fi
 
     echo "git $action $pointer;";
-    #git $action $pointer;
+    git $action $pointer;
 }
 
 __gi_br_action_delete_confirm () {
