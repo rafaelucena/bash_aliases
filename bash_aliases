@@ -1,5 +1,8 @@
 # NOT ALIASES BUT HELPFUL ANYWAY
 # include aliases for git
+if [ -f ~/.bash_aliases_git_internal ]; then
+    . ~/.bash_aliases_git_internal
+fi
 if [ -f ~/.bash_aliases_git ]; then
     . ~/.bash_aliases_git
 fi

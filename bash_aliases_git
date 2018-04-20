@@ -83,85 +83,45 @@ gipx () {
 gibr () {
     local action='';
     local pointer='';
+    local question='';
 
     # If we don't have any parameter, I assume we just want to see local branches
     if [[ -z "$1" ]]; then
         action='branch';
     else
-        isParameter="^-\w+";
-
-        # Now, if I do have parameters, I will evaluate them one by one (IN ORDER, PLEASE)
-        for var in "$@"
-        do
-            # And now I check if current variable is a parameter or not
-            if [[ $var =~ $isParameter ]]; then
-                # If it's a parameter, I check if my own action is empty so I won't override it
-                if [[ -z $action ]]; then
-                    # If it's -new, we create and move to the branch
-                    if [[ $var = '-new' ]]; then
-                        action='checkout -b';
-                    # If it's -delete, we evaluate further
-                    elif [[ $var = '-delete' ]]; then
-                        gibr_subfunction_delete $@;
-                    fi
-                fi
-            # If it's not a parameter, then its a pointer to a branch
-            elif [[ -z $pointer ]]; then
-                if [[ -z $action ]]; then
-                    action='checkout';
-                fi
-                pointer=" $var";
-            fi
-        done
+        __gi_br_set_command $@;
 
         # Now I evaluate if it's to delete or not with RegEx
-        isDelete="(-D|--delete)";
+        local isDelete="(-D|--delete)";
         if [[ $action =~ $isDelete ]]; then
             # If it's to delete, then I check if it's local or not
-            isLocal="(-D)";
+            local isLocal="(-D)";
+            local answer='';
+
             if [[ $action =~ $isLocal ]]; then
-                # And not I show the appropriated message for local delete
-                read -p "Are you sure you want to remove$pointer locally?" -n 1 -r
-                echo    # (optional) move to a new line
-                if [[ $REPLY =~ ^[Yy]$ ]]; then
-                    true;
-                else
-                    return;
-                fi
+                # And now I set the appropriated message for local delete
+                question="Are you sure you want to remove $pointer locally_?";
             else
-                # And not I show the appropriated message for REMOTE delete
-                read -p "Are you REALLY sure you want to remove$pointer FROM REMOTE?" -n 1 -r
-                echo    # (optional) move to a new line
-                if [[ $REPLY =~ ^[Yy]$ ]]; then
-                    true;
-                else
-                    return;
-                fi
+                # And now I set the appropriated message for REMOTE delete
+                question="Are you REALLY sure you want to remove $pointer FROM REMOTE_?";
+            fi
+
+            read -p "$question" -n 1 -r answer
+            echo    # (optional) move to a new line
+            if [[ $answer =~ ^[Yy]$ ]]; then
+                true;
+            else
+                return;
             fi
         fi
     fi
 
-    echo "git $action$pointer;";
-    #git $action$pointer;
+    echo "git $action $pointer;";
+    #git $action $pointer;
 }
 
-gibr_subfunction_delete () {
-    # Now I run the loop again to check for a more specific action
-    for deleteVar in "$@"
-    do
-        # If it's -local, I set -D (for now) for deleting even unmerged branches
-        if [[ $deleteVar = '-local' ]]; then
-            action="branch -D";
-        # If it's -origin, I set the action to use push --delete from the remote server
-        elif [[ $deleteVar = '-origin' ]]; then
-            action="push origin --delete";
-        fi
-    done
-
-    # If there is no specific information about how to delete, I assume it's local -D (for now)
-    if [[ -z $action ]]; then
-        action="branch -D";
-    fi
+__gi_br_action_delete_confirm () {
+    return 1;
 }
 
 gotomap () {

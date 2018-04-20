@@ -1,0 +1,59 @@
+#GIT INTERNAL COMMANDS
+__gi_br_set_command () {
+    isParameter="^-\w+";
+
+    # Now, if I do have parameters, I will evaluate them one by one (IN ORDER, PLEASE)
+    for var in "$@"; do
+        # And now I check if current variable is a parameter or not
+        if [[ $var =~ $isParameter ]]; then
+            # If it's a parameter, I check if my own action is empty so I won't override it
+            if [[ -z $action ]]; then
+                __gi_br_action $@;
+            fi
+        # If it's not a parameter, then its a pointer to a branch
+        elif [[ -z $pointer ]]; then
+            __gi_br_pointer;
+        fi
+    done
+}
+
+__gi_br_pointer() {
+    if [[ -z $action ]]; then
+        action='checkout';
+    fi
+
+    pointer="$var";
+}
+
+__gi_br_action() {
+    # If it's -new, we create and move to the branch
+    if [[ $var = '-new' ]]; then
+        action='checkout -b';
+    # If it's -delete, we evaluate further
+    elif [[ $var = '-delete' ]]; then
+        __gi_br_action_delete $@;
+    fi
+}
+
+__gi_br_action_delete () {
+    # Now I run the loop again to check for a more specific action
+    for deleteVar in "$@"
+    do
+        # If it's -local, I set -D (for now) for deleting even unmerged branches
+        if [[ $deleteVar = '-local' ]]; then
+            action="branch -D";
+        # If it's -origin, I set the action to use push --delete from the remote server
+        elif [[ $deleteVar = '-origin' ]]; then
+            action="push origin --delete";
+        fi
+    done
+
+    # If there is no specific information about how to delete, I assume it's local -D (for now)
+    if [[ -z $action ]]; then
+        action="branch -D";
+    fi
+}
+
+__gi_br_action_delete_confirm_ () {
+    return 1;
+}
