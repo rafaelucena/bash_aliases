@@ -91,21 +91,10 @@ gibr () {
     else
         __gi_br_set_command $@;
 
-        # Now I evaluate if it's to delete or not with RegEx
-        local isDelete="(-D|--delete)";
-        if [[ $action =~ $isDelete ]]; then
-            # If it's to delete, then I check if it's local or not
-            local isLocal="(-D)";
+        __gi_br_set_question;
+
+        if [[ -n "$question" ]]; then
             local answer='';
-
-            if [[ $action =~ $isLocal ]]; then
-                # And now I set the appropriated message for local delete
-                question="Are you sure you want to remove $pointer locally_?";
-            else
-                # And now I set the appropriated message for REMOTE delete
-                question="Are you REALLY sure you want to remove $pointer FROM REMOTE_?";
-            fi
-
             read -p "$question" -n 1 -r answer
             echo    # (optional) move to a new line
             if [[ $answer =~ ^[Yy]$ ]]; then
@@ -118,10 +107,6 @@ gibr () {
 
     echo "git $action $pointer;";
     git $action $pointer;
-}
-
-__gi_br_action_delete_confirm () {
-    return 1;
 }
 
 gotomap () {

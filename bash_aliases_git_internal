@@ -17,6 +17,23 @@ __gi_br_set_command () {
     done
 }
 
+__gi_br_set_question () {
+    # Now I evaluate if it's to delete or not with RegEx
+    local isDelete="(-D|--delete)";
+    if [[ $action =~ $isDelete ]]; then
+        # If it's to delete, then I check if it's local or not
+        local isLocal="(-D)";
+
+        if [[ $action =~ $isLocal ]]; then
+            # And now I set the appropriated message for local delete
+            question="Are you sure you want to remove $pointer locally?";
+        else
+            # And now I set the appropriated message for REMOTE delete
+            question="Are you REALLY sure you want to remove $pointer FROM REMOTE?";
+        fi
+    fi
+}
+
 __gi_br_pointer() {
     if [[ -z $action ]]; then
         action='checkout';
