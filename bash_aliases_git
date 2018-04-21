@@ -105,8 +105,7 @@ gibr () {
         fi
     fi
 
-    echo "git $action $pointer;";
-    git $action $pointer;
+    __gi_print_execute;
 }
 
 gotomap () {

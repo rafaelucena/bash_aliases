@@ -1,4 +1,19 @@
 #GIT INTERNAL COMMANDS
+__gi_print_execute () {
+    if [[ -n "$action" ]]; then
+        local command='';
+
+        if [[ -n "$pointer" ]]; then
+            command="git $action $pointer;";
+        else
+            command="git $action;";
+        fi
+
+        echo $command;
+        $command;
+    fi
+}
+
 __gi_br_set_command () {
     isParameter="^-\w+";
 
@@ -20,6 +35,7 @@ __gi_br_set_command () {
 __gi_br_set_question () {
     # Now I evaluate if it's to delete or not with RegEx
     local isDelete="(-D|--delete)";
+
     if [[ $action =~ $isDelete ]]; then
         # If it's to delete, then I check if it's local or not
         local isLocal="(-D)";
@@ -54,8 +70,7 @@ __gi_br_action() {
 
 __gi_br_action_delete () {
     # Now I run the loop again to check for a more specific action
-    for deleteVar in "$@"
-    do
+    for deleteVar in "$@"; do
         # If it's -local, I set -D (for now) for deleting even unmerged branches
         if [[ $deleteVar = '-local' ]]; then
             action="branch -D";
