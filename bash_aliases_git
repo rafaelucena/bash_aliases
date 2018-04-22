@@ -6,28 +6,21 @@ alias gipu='git pull';  #down <==
 alias gist='git status';
 
 # complex aliases
-# git upstream
-giup () {
-    #If first variable is null, don't go forward
-    if [[ -z "$1" ]]; then
-        echo "COMMAND INVALID! MUST HAVE AT LEAST ONE VARIABLE!";
+
+# git commit
+# COLOR FIXED
+# SUBFUNCTIONS FIXED
+# LOCAL VARIABLES FIXED
+# PRINT COMMAND FIXED
+# COMMENTS @TODO
+gicm () {
+    local action='commit -m';
+    local pointer="\"$@\"";
+
+    if [[ -n $@ ]]; then
+        __gi_print_execute;
     else
-        #If second variable is null
-        if [[ -z "$2" ]]; then
-            #Set the second variable equal to the first one
-            set $1 $1;
-        fi
-        git branch --set-upstream-to=origin/$1 $2;
-    fi
-}
-# git checkout
-gico () {
-    #If first variable is null, checkout master.
-    if [[ -z "$1" ]]; then
-        git checkout master;
-        git pull;
-    else
-        git checkout $1;
+        echo "Usage: gicm <commit message with quotes>";
     fi
 }
 
