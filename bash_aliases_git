@@ -79,7 +79,9 @@ gipx () {
     $action;
 }
 
-# GIT BRANCH 2.0
+# GIT BRANCH 3.0
+# COLOR FIXED
+# SUBFUNCTIONS FIXED
 gibr () {
     local action='';
     local pointer='';

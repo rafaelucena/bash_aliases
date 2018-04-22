@@ -18,6 +18,7 @@ __gi_print_execute () {
     fi
 }
 
+##GIBR FUNCTIONS
 __gi_br_set_command () {
     isParameter="^-\w+";
 
