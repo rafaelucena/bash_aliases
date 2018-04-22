@@ -68,14 +68,16 @@ giad () {
 }
 
 # git push #up   ==>
+# COLOR FIXED
+# SUBFUNCTIONS FIXED
+# LOCAL VARIABLES FIXED
+# PRINT COMMAND FIXED
 gipx () {
-    action="git pull";
-    echo "$action;";
-    $action;
+    local action="pull";
+    __gi_print_execute;
 
-    action="git push";
-    echo "$action;";
-    $action;
+    action="push";
+    __gi_print_execute;
 }
 
 # GIT BRANCH 3.0
