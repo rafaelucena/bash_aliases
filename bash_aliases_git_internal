@@ -2,14 +2,18 @@
 __gi_print_execute () {
     if [[ -n "$action" ]]; then
         local command='';
+        local command_colored='';
 
         if [[ -n "$pointer" ]]; then
-            command="git $action $pointer;";
+            command="git $action $pointer";
+            command_colored="$(dye cyan)git$(dye undye) $(dye red)$action$(dye undye) $(dye orange)$pointer$(dye undye);";
         else
-            command="git $action;";
+            # for some reason, semicolon after $action triggers an error for git branch
+            command="git $action";
+            command_colored="$(dye cyan)git$(dye undye) $(dye green)$action$(dye undye);";
         fi
 
-        echo $command;
+        echo -e $command_colored;
         $command;
     fi
 }
@@ -60,10 +64,13 @@ __gi_br_pointer() {
 
 __gi_br_action() {
     # If it's -new, we create and move to the branch
-    if [[ $var = '-new' ]]; then
+    local isActionNew='(-new|-n)';
+    local isActionDelete='(-delete|-d|-D)';
+
+    if [[ $var =~ $isActionNew ]]; then
         action='checkout -b';
     # If it's -delete, we evaluate further
-    elif [[ $var = '-delete' ]]; then
+    elif [[ $var =~ $isActionDelete ]]; then
         __gi_br_action_delete $@;
     fi
 }
@@ -72,10 +79,13 @@ __gi_br_action_delete () {
     # Now I run the loop again to check for a more specific action
     for deleteVar in "$@"; do
         # If it's -local, I set -D (for now) for deleting even unmerged branches
-        if [[ $deleteVar = '-local' ]]; then
+        local isLocal='(-local|-l)';
+        local isRemote='(-origin|-o|-remote|-r)';
+
+        if [[ $deleteVar =~ $isLocal ]]; then
             action="branch -D";
         # If it's -origin, I set the action to use push --delete from the remote server
-        elif [[ $deleteVar = '-origin' ]]; then
+        elif [[ $deleteVar =~ $isRemote ]]; then
             action="push origin --delete";
         fi
     done
@@ -84,8 +94,4 @@ __gi_br_action_delete () {
     if [[ -z $action ]]; then
         action="branch -D";
     fi
-}
-
-__gi_br_action_delete_confirm_ () {
-    return 1;
 }

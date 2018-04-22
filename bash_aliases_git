@@ -95,6 +95,7 @@ gibr () {
 
         if [[ -n "$question" ]]; then
             local answer='';
+
             read -p "$question" -n 1 -r answer
             echo    # (optional) move to a new line
             if [[ $answer =~ ^[Yy]$ ]]; then
