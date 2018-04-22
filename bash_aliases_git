@@ -49,27 +49,22 @@ gidf () {
 }
 
 # git add
+# COLOR FIXED
+# SUBFUNCTIONS FIXED
+# LOCAL VARIABLES FIXED
+# PRINT COMMAND FIXED
+# COMMENTS @TODO
 giad () {
-    action="git add";
-    if [[ -z "$1" ]]; then
+    local action='add';
+    local pointer='';
+
+    if [[ -n "$1" ]]; then
+        pointer=$(__gi_file_extension_modifier $1);
+    else
         echo "COMMAND INVALID! MUST HAVE AT LEAST ONE VARIABLE!";
-    else
-        action=$(transformGitFileAction $1);
-
-        echo "$action;";
-        $action;
-    fi
-}
-
-transformGitFileAction () {
-    hasExtension="(\.\w?)";
-    if [[ $1 =~ $hasExtension ]]; then
-        action="$action *$1"
-    else
-        action="$action *$1*";
     fi
 
-    echo "$action";
+    __gi_print_execute;
 }
 
 # git push #up   ==>
