@@ -18,6 +18,19 @@ __gi_print_execute () {
     fi
 }
 
+__gi_file_extension_modifier () {
+    local hasExtension='(\.\w?)';
+    local pointer='';
+
+    if [[ $1 =~ $hasExtension ]]; then
+        pointer="*$1"
+    else
+        pointer="*$1*";
+    fi
+
+    echo "$pointer";
+}
+
 ##GIBR FUNCTIONS
 __gi_br_set_command () {
     isParameter="^-\w+";

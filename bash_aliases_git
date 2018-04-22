@@ -30,18 +30,22 @@ gico () {
         git checkout $1;
     fi
 }
-# git diff
-gidf () {
-    action="git diff";
-    if [[ -z "$1" ]]; then
-        echo "$action;";
-        $action;
-    else
-        action=$(transformGitFileAction $1);
 
-        echo "$action;";
-        $action;
+# git diff
+# COLOR FIXED
+# SUBFUNCTIONS FIXED
+# LOCAL VARIABLES FIXED
+# PRINT COMMAND FIXED
+# COMMENTS @TODO
+gidf () {
+    local action='diff';
+    local pointer='';
+
+    if [[ -n "$1" ]]; then
+        pointer=$(__gi_file_extension_modifier $1);
     fi
+
+    __gi_print_execute;
 }
 
 # git add
@@ -84,6 +88,7 @@ gipx () {
 # SUBFUNCTIONS FIXED
 # LOCAL VARIABLES FIXED
 # PRINT COMMAND FIXED
+# COMMENTS @TODO
 gibr () {
     local action='';
     local pointer='';
