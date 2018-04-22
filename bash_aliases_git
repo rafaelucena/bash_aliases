@@ -82,6 +82,8 @@ gipx () {
 # GIT BRANCH 3.0
 # COLOR FIXED
 # SUBFUNCTIONS FIXED
+# LOCAL VARIABLES FIXED
+# PRINT COMMAND FIXED
 gibr () {
     local action='';
     local pointer='';
