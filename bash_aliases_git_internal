@@ -75,10 +75,10 @@ __gi_br_set_question () {
 
         if [[ $action =~ $isLocal ]]; then
             # And now I set the appropriated message for local delete
-            question="Are you sure you want to remove $pointer locally?";
+            question="Are you sure you want to remove $(dye orange)$pointer$(dye undye) locally?";
         else
             # And now I set the appropriated message for REMOTE delete
-            question="Are you REALLY sure you want to remove $pointer FROM REMOTE?";
+            question="Are you REALLY sure you want to remove $(dye red)$pointer$(dye undye) FROM REMOTE?";
         fi
     fi
 }

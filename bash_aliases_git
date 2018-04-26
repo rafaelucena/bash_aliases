@@ -87,7 +87,7 @@ gibr () {
     local question='';
 
     # If we don't have any parameter, I assume we just want to see local branches
-    if [[ -z "$1" ]]; then
+    if [[ -z $1 ]]; then
         action='branch';
     else
         __gi_br_set_command $@;
@@ -97,7 +97,7 @@ gibr () {
         if [[ -n "$question" ]]; then
             local answer='';
 
-            read -p "$question" -n 1 -r answer
+            read -p "$(echo -e $question)" -n 1 -r answer
             echo    # (optional) move to a new line
             if [[ $answer =~ ^[Yy]$ ]]; then
                 true;
