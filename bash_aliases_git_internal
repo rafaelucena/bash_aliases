@@ -1,20 +1,35 @@
 #GIT INTERNAL COMMANDS
 __gi_print_execute () {
-    if [[ -n "$action" ]]; then
-        local command='';
-        local command_colored='';
+    if [[ -n $action ]]; then
+        __print_command 'git';
 
-        if [[ -n "$pointer" ]]; then
-            command="git $action $pointer";
-            command_colored="$(dye cyan)git$(dye undye) $(dye red)$action$(dye undye) $(dye orange)$pointer$(dye undye);";
-        else
-            # for some reason, semicolon after $action triggers an error for git branch
-            command="git $action";
-            command_colored="$(dye cyan)git$(dye undye) $(dye green)$action$(dye undye);";
-        fi
+        __run_command 'git';
 
-        echo -e $command_colored;
-        $command;
+#        echo -e $print_command;
+        #$command;
+    fi
+}
+
+__print_command () {
+    local print_command='';
+
+    if [[ -n $pointer ]]; then
+        print_command="$(dye cyan)$1$(dye undye) $(dye red)$action$(dye undye) $(dye orange)$pointer$(dye undye);";
+    else
+        # for some reason, semicolon after $action triggers an error for git branch
+        print_command="$(dye cyan)$1$(dye undye) $(dye green)$action$(dye undye);";
+    fi
+
+    echo -e "$print_command";
+}
+
+__run_command () {
+    local command=$1;
+
+    if [[ -n $pointer ]]; then
+        $command $action "$pointer";
+    else
+        $command $action;
     fi
 }
 
@@ -52,11 +67,11 @@ __gi_br_set_command () {
 
 __gi_br_set_question () {
     # Now I evaluate if it's to delete or not with RegEx
-    local isDelete="(-D|--delete)";
+    local isDelete='(-D|--delete)';
 
     if [[ $action =~ $isDelete ]]; then
         # If it's to delete, then I check if it's local or not
-        local isLocal="(-D)";
+        local isLocal='(-D)';
 
         if [[ $action =~ $isLocal ]]; then
             # And now I set the appropriated message for local delete
@@ -97,15 +112,15 @@ __gi_br_action_delete () {
         local isRemote='(-origin|-o|-remote|-r)';
 
         if [[ $deleteVar =~ $isLocal ]]; then
-            action="branch -D";
+            action='branch -D';
         # If it's -origin, I set the action to use push --delete from the remote server
         elif [[ $deleteVar =~ $isRemote ]]; then
-            action="push origin --delete";
+            action='push origin --delete';
         fi
     done
 
     # If there is no specific information about how to delete, I assume it's local -D (for now)
     if [[ -z $action ]]; then
-        action="branch -D";
+        action='branch -D';
     fi
 }

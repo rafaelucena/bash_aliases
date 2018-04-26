@@ -66,10 +66,12 @@ giad () {
 # LOCAL VARIABLES FIXED
 # PRINT COMMAND FIXED
 gipx () {
-    local action="pull";
+    local action='';
+
+    action='pull';
     __gi_print_execute;
 
-    action="push";
+    action='push';
     __gi_print_execute;
 }
 
