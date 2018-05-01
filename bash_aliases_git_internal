@@ -1,15 +1,4 @@
-#GIT INTERNAL COMMANDS
-__gi_print_execute () {
-    if [[ -n $action ]]; then
-        __print_command 'git';
-
-        __run_command 'git';
-
-#        echo -e $print_command;
-        #$command;
-    fi
-}
-
+#
 __print_command () {
     local print_command='';
 
@@ -33,6 +22,19 @@ __run_command () {
     fi
 }
 
+#GIT INTERNAL COMMANDS
+__gi_print_execute () {
+    if [[ -n $action ]]; then
+        __print_command 'git';
+
+        __run_command 'git';
+    fi
+}
+
+__gi_get_current_branch () {
+    echo $(git symbolic-ref --short HEAD);
+}
+
 __gi_file_extension_modifier () {
     local hasExtension='(\.\w?)';
     local pointer='';
@@ -48,7 +50,7 @@ __gi_file_extension_modifier () {
 
 ##GIBR FUNCTIONS
 __gi_br_set_command () {
-    isParameter="^-\w+";
+    isParameter='^-\w+';
 
     # Now, if I do have parameters, I will evaluate them one by one (IN ORDER, PLEASE)
     for var in "$@"; do
@@ -59,7 +61,8 @@ __gi_br_set_command () {
                 __gi_br_action $@;
             fi
         # If it's not a parameter, then its a pointer to a branch
-        elif [[ -z $pointer ]]; then
+#        elif [[ -z $pointer ]]; then
+        else
             __gi_br_pointer;
         fi
     done
@@ -71,9 +74,9 @@ __gi_br_set_question () {
 
     if [[ $action =~ $isDelete ]]; then
         # If it's to delete, then I check if it's local or not
-        local isLocal='(-D)';
+        local isDeleteLocal='(-D)';
 
-        if [[ $action =~ $isLocal ]]; then
+        if [[ $action =~ $isDeleteLocal ]]; then
             # And now I set the appropriated message for local delete
             question="Are you sure you want to remove $(dye orange)$pointer$(dye undye) locally?";
         else
@@ -93,29 +96,52 @@ __gi_br_pointer() {
 
 __gi_br_action() {
     # If it's -new, we create and move to the branch
-    local isActionNew='(-new|-n)';
-    local isActionDelete='(-delete|-d|-D)';
+    local isActionNew='(-new$|-n$)';
+    local isActionList='((-l$|-a$|-r$)|(-local$|-all$|-remote$))';
+    local isActionDelete='((-d$|-D$)|(-delete$|-DELETE$))';
 
     if [[ $var =~ $isActionNew ]]; then
         action='checkout -b';
     # If it's -delete, we evaluate further
+    elif [[ $var =~ $isActionList ]]; then
+        __gi_br_action_list $var;
     elif [[ $var =~ $isActionDelete ]]; then
         __gi_br_action_delete $@;
     fi
 }
 
+__gi_br_action_list () {
+   local isActionListLocal='((-l$|-local$))';
+   local isActionListRemote='((-r$|-remote$))';
+   local isActionListAll='((-a$|-all$))';
+
+   action='branch';
+
+   if [[ $1 =~ $isActionListLocal ]]; then
+       pointer='-l';
+   elif [[ $1 =~ $isActionListRemote ]]; then
+       pointer='-r';
+   elif [[ $1 =~ $isActionListAll ]]; then
+       pointer='-a';
+   fi
+}
+
 __gi_br_action_delete () {
     # Now I run the loop again to check for a more specific action
-    for deleteVar in "$@"; do
-        # If it's -local, I set -D (for now) for deleting even unmerged branches
-        local isLocal='(-local|-l)';
-        local isRemote='(-origin|-o|-remote|-r)';
 
+    # If it's -local, I set -D (for now) for deleting even unmerged branches
+    local isLocal='(-l$|-local$)';
+    local isRemote='((-o$|-r$)|(-origin$|-remote$))';
+
+    for deleteVar in "$@"; do
         if [[ $deleteVar =~ $isLocal ]]; then
             action='branch -D';
         # If it's -origin, I set the action to use push --delete from the remote server
         elif [[ $deleteVar =~ $isRemote ]]; then
             action='push origin --delete';
+
+            # If it's to delete remotely, I fill the current branch, just in case
+            pointer=$(__gi_get_current_branch);
         fi
     done
 
