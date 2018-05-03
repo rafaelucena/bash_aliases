@@ -31,10 +31,6 @@ __gi_print_execute () {
     fi
 }
 
-__gi_get_current_branch () {
-    echo $(git symbolic-ref --short HEAD);
-}
-
 __gi_file_extension_modifier () {
     local hasExtension='(\.\w?)';
     local pointer='';
@@ -141,7 +137,7 @@ __gi_br_action_delete () {
             action='push origin --delete';
 
             # If it's to delete remotely, I fill the current branch, just in case
-            pointer=$(__gi_get_current_branch);
+            pointer=$(get_git_branch);
         fi
     done
 
