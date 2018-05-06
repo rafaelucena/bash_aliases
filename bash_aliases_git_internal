@@ -44,6 +44,26 @@ __gi_file_extension_modifier () {
     echo "$pointer";
 }
 
+##GIBR FUNCTIONS 3.0
+__gi_global_filter_input () {
+    local isParameter='^-\w+';
+    # Now, if I do have parameters, I will evaluate them and allocate into specific variables
+    for input in $@; do
+        # And now I check if current variable is a parameter or not
+        if [[ $input =~ $isParameter ]]; then
+            # If it's a parameter, I check if my own action is empty so I won't override it
+            if [[ -z $action ]]; then
+                action=$input;
+            elif [[ -z $subAction ]]; then
+                subAction=$input;
+            fi
+        # If it's not a parameter, then its a pointer to a branch
+        elif [[ -z $pointer ]]; then
+            pointer=$input;
+        fi
+    done
+}
+
 ##GIBR FUNCTIONS
 __gi_br_set_command () {
     isParameter='^-\w+';

@@ -68,7 +68,7 @@ function editbash {
 function dye {
     local color='';
 
-    case "$1" in
+    case $1 in
         'black')
             color='\033[0;30m';;
         'red' )

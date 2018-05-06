@@ -110,6 +110,25 @@ gibr () {
     __gi_print_execute;
 }
 
+gitest () {
+    local error='';
+    local action='';
+    local subAction='';
+    local pointer='';
+    local question='';
+
+    # First we fill the variables according to the information received
+    __gi_global_filter_input $@;
+
+    local printable='';
+
+    printable="The action is: $action";
+    printable="$printable | The pointer is: $pointer";
+    printable="$printable | The subAction is: $subAction";
+
+    echo $printable;
+}
+
 gotomap () {
     basepath=${PWD##*/};
     basepath=${basepath,,};
