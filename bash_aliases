@@ -85,8 +85,12 @@ function dye {
             color='\033[0;36m';;
         'light_gray' )
             color='\033[0;37m';;
+        'light_green' )
+            color='\033[1;32m';;
         'yellow' )
             color='\033[1;33m';;
+        'light_blue' )
+            color='\033[1;34m';;
         'white' )
             color='\033[1;37m';;
         'undye')
@@ -95,18 +99,20 @@ function dye {
             local usage='';
 
             usage="$(dye black)black$(dye undye)";
-            usage="$usage|$(dye red)red$(dye undye)";
-            usage="$usage|$(dye green)green$(dye undye)";
+            usage="$usage|$(dye yellow)yellow$(dye undye)";
             usage="$usage|$(dye orange)orange$(dye undye)";
+            usage="$usage|$(dye red)red$(dye undye)";
+            usage="$usage|$(dye light_green)light_green$(dye undye)";
+            usage="$usage|$(dye green)green$(dye undye)";
+            usage="$usage|$(dye cyan)cyan$(dye undye)";
+            usage="$usage|$(dye light_blue)light_blue$(dye undye)";
             usage="$usage|$(dye blue)blue$(dye undye)";
             usage="$usage|$(dye purple)purple$(dye undye)";
-            usage="$usage|$(dye cyan)cyan$(dye undye)";
             usage="$usage|$(dye light_gray)light_gray$(dye undye)";
-            usage="$usage|$(dye yellow)yellow$(dye undye)";
             usage="$usage|$(dye white)white$(dye undye)";
             usage="$usage|$(dye undye)undye$(dye undye)";
 
-            echo -e "Usage: dye {$usage}";
+            echo -e "Usage: $ dye {$usage}";
             return;;
     esac
 
