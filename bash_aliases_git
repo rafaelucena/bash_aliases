@@ -127,17 +127,26 @@ gitest () {
     # First we fill the variables according to the information received
     __gi_global_filter_input "${@}";
 
-    case "${firstAction}" in
-        '-n'|'-new')
-            __gi_br_action_new "${firstPointer}";;
-        *)
-            echo 'eita';;
-    esac
-
     if [[ -n "${error}" ]]; then
+        # @TODO - optimize errors
         echo "${error}";
     else
-        echo "git ${action} ${pointer}";
+        case "${firstAction}" in
+            # Creating a new branch
+            '-n'|'-new')
+                __gi_br_action_new "${firstPointer}";;
+            *)
+                # @TODO - gibr without parameters will output usage
+                echo 'eita';;
+        esac
+
+        if [[ -n "${error}" ]]; then
+            # @TODO - optimize errors
+            echo "${error}";
+        else
+            # If no errors were found, we keep on to execution passing only the usable variables
+            __gi_global_print_execute "${action}" "${pointer}";
+        fi
     fi
 }
 
