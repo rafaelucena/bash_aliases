@@ -134,6 +134,7 @@ gitest () {
         case "${firstAction}" in
             # Creating a new branch
             '-n'|'-new')
+                # Only ${firstPointer} is necessary here
                 __gi_br_action_new "${firstPointer}";;
             *)
                 # @TODO - gibr without parameters will output usage
