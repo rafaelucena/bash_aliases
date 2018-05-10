@@ -113,17 +113,32 @@ gibr () {
 gitest () {
     local error='';
     local question='';
+    local action='';
+    local pointer='';
 
-    local mainAction='';
+    local firstAction='';
     local secondAction='';
     local limitAction=2;
 
-    local mainPointer='';
+    local firstPointer='';
     local secondPointer='';
     local limitPointer=1;
 
     # First we fill the variables according to the information received
-    __gi_global_filter_input $@;
+    __gi_global_filter_input "${@}";
+
+    case "${firstAction}" in
+        '-n'|'-new')
+            __gi_br_action_new "${firstPointer}";;
+        *)
+            echo 'eita';;
+    esac
+
+    if [[ -n "${error}" ]]; then
+        echo "${error}";
+    else
+        echo "git ${action} ${pointer}";
+    fi
 }
 
 gotomap () {

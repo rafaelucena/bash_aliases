@@ -43,49 +43,6 @@ __gi_file_extension_modifier () {
     echo "$pointer";
 }
 
-##GIBR FUNCTIONS 3.0
-__gi_global_filter_input () {
-    local isParameter='^-\w+';
-
-    local countActions=0;
-    local countPointers=0;
-
-    # Now, if I do have parameters, I will evaluate them and allocate into specific variables
-    for input in $@; do
-        # And now I check if current variable is a parameter or not
-        if [[ ${input} =~ ${isParameter} ]]; then
-            ((countActions++));
-
-            # If it's a parameter, I check if my own action is empty so I won't override it
-            if [[ -z ${mainAction} ]]; then
-                mainAction=${input};
-            elif [[ -z ${secondaryAction} ]]; then
-                secondAction=${input};
-            fi
-        # If it's not a parameter, then its a pointer to a branch
-        else
-            ((countPointers++));
-
-            if [[ -z ${mainPointer} ]]; then
-                mainPointer=${input};
-            fi
-        fi
-
-        if [[ ${countActions} -gt ${limitAction} || ${countPointers} -gt ${limitPointer} ]]; then
-            if [[ ${countActions} -gt ${limitAction} && ${countPointers} -gt ${limitPointer} ]]; then
-                error='Too many arguments';
-            elif [[ ${countActions} -gt ${limitAction} ]]; then
-                error='Too many parameters';
-            else
-                error='Too many pointers';
-            fi
-            break;
-        fi
-    done
-
-    #echo "Actions: ${countActions}, Pointers: ${countPointers}, Error: ${error}";
-}
-
 ##GIBR FUNCTIONS
 __gi_br_set_command () {
     isParameter='^-\w+';
@@ -186,5 +143,62 @@ __gi_br_action_delete () {
     # If there is no specific information about how to delete, I assume it's local -D (for now)
     if [[ -z $action ]]; then
         action='branch -D';
+    fi
+}
+
+############### KEEPING EVERYTHING BEYOND THIS POINT
+## GI GLOBAL
+__gi_global_filter_input () {
+    local isParameter='^-\w+';
+
+    local countActions=0;
+    local countPointers=0;
+
+    # Now, if I do have parameters, I will evaluate them and allocate into specific variables
+    for input in "${@}"; do
+        # And now I check if current variable is a parameter or not
+        if [[ "${input}" =~ ${isParameter} ]]; then
+            ((countActions++));
+
+            # If it's a parameter, I check if my own action is empty so I won't override it
+            if [[ -z "${firstAction}" ]]; then
+                firstAction="${input}";
+            elif [[ -z "${secondaryAction}" ]]; then
+                secondAction="${input}";
+            fi
+        # If it's not a parameter, then its a pointer to a branch
+        else
+            ((countPointers++));
+
+            if [[ -z "${firstPointer}" ]]; then
+                firstPointer="${input}";
+            elif [[ -z "${secondPointer}" ]]; then
+                secondPointer="${input}";
+            fi
+        fi
+
+        if [[ "${countActions}" -gt "${limitAction}" || "${countPointers}" -gt "${limitPointer}" ]]; then
+            if [[ "${countActions}" -gt "${limitAction}" && "${countPointers}" -gt "${limitPointer}" ]]; then
+                error='Too many arguments';
+            elif [[ "${countActions}" -gt "${limitAction}" ]]; then
+                error='Too many parameters';
+            else
+                error='Too many pointers';
+            fi
+            break;
+        fi
+    done
+
+    #echo "Actions: ${countActions}, Pointers: ${countPointers}, Error: ${error}";
+    #echo "$firstPointer";
+}
+
+## GI_BR FUNCTIONS 3.0
+__gi_br_action_new () {
+    if [[ -n "${1}" ]]; then
+        action='checkout -b';
+        pointer="${1}";
+    else
+        error='missing pointer';
     fi
 }
