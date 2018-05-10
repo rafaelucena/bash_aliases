@@ -248,3 +248,8 @@ __gi_br_action_list_up () {
             ;;
     esac
 }
+
+__gi_br_action_checkout () {
+    action='checkout';
+    pointer="${1}";
+}

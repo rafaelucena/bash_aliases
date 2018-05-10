@@ -141,8 +141,16 @@ gitest () {
                 # Only ${firstAction} is necessary here
                 __gi_br_action_list_up "${firstAction}";;
             *)
-                # @TODO - gibr without parameters will output usage
-                echo 'eita';;
+                # Checking out branches
+                if [[ -z "${firstAction}" && -n "${firstPointer}" ]]; then
+                    # Only ${firstPointer} is necessary here
+                    __gi_br_action_checkout "${firstPointer}";
+                else
+                    # @TODO - gibr without parameters will output usage
+                    echo 'eita';
+                fi
+
+                ;;
         esac
 
         if [[ -n "${error}" ]]; then
