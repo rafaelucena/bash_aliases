@@ -189,7 +189,7 @@ __gi_global_filter_input () {
         fi
     done
 
-    echo "Actions: ${countActions}, Pointers: ${countPointers}, Error: ${error}";
+    #echo "Actions: ${countActions}, Pointers: ${countPointers}, Error: ${error}";
     #echo "$firstPointer";
 }
 
@@ -197,7 +197,7 @@ __gi_global_print_execute () {
     if [[ -n "${1}" ]]; then
         __global_print 'git' "${1}" "${2}";
 
-        #__global_execute 'git' "${1}" "${2}";
+        __global_execute 'git' "${1}" "${2}";
     fi
 }
 
@@ -231,4 +231,20 @@ __gi_br_action_new () {
     else
         error='missing pointer';
     fi
+}
+
+__gi_br_action_list_up () {
+    action='branch';
+
+    case "${1}" in
+        '-l'|'-local'|'-list')
+            pointer='-l';
+            ;;
+        '-r'|'-remote')
+            pointer='-r';
+            ;;
+        '-a'|'-all')
+            pointer='-a';
+            ;;
+    esac
 }
