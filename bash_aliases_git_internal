@@ -197,7 +197,10 @@ __gi_global_print_execute () {
     if [[ -n "${1}" ]]; then
         __global_print 'git' "${1}" "${2}";
 
-        __global_execute 'git' "${1}" "${2}";
+        # for now let's assume that anything sent as a third parameter is the debug trigger
+        if [[ -z "${3}" ]]; then
+            __global_execute 'git' "${1}" "${2}";
+        fi
     fi
 }
 
@@ -224,6 +227,36 @@ __global_execute () {
 }
 
 ## GI_BR FUNCTIONS 3.0
+__gi_br_action_setup () {
+    case "${firstAction}" in
+        # Creating a new branch
+        '-n'|'-new')
+            # Only ${firstPointer} is necessary here
+            __gi_br_action_new "${firstPointer}";
+            ;;
+        # Listing branches
+        '-l'|'-r'|'-a'|'-local'|'-list'|'-remote'|'-all')
+            # Only ${firstAction} is necessary here
+            __gi_br_action_list_up "${firstAction}";
+            ;;
+        '-d'|'-del'|'-delete')
+            # ${firstAction} and ${firstPointer} are necessary here
+            __gi_br_action_delete_up "${secondAction}" "${firstPointer}";
+            ;;
+        *)
+            # Checking out branches
+            if [[ -z "${firstAction}" && -n "${firstPointer}" ]]; then
+                # Only ${firstPointer} is necessary here
+                __gi_br_action_checkout "${firstPointer}";
+            else
+                # @TODO - gibr without parameters will output usage
+                echo 'eitas';
+            fi
+
+            ;;
+    esac
+}
+
 __gi_br_action_new () {
     if [[ -n "${1}" ]]; then
         action='checkout -b';
@@ -247,6 +280,33 @@ __gi_br_action_list_up () {
             pointer='-a';
             ;;
     esac
+}
+
+__gi_br_action_delete_up () {
+    case "${1}" in
+        '-l'|'-local'|'')
+            action='branch -D';
+            __gi_br_helper_pointer "${2}";
+            question="Are you sure you want to remove $(dye orange)${pointer}$(dye undye) locally?";
+
+            ;;
+        '-o'|'-r'|'-origin'|'-remote')
+            action='push origin --delete';
+            __gi_br_helper_pointer "${2}" 'detect';
+            question="Are you REALLY sure you want to remove $(dye red)${pointer}$(dye undye) FROM REMOTE?";
+
+            ;;
+    esac
+}
+
+__gi_br_helper_pointer () {
+    if [[ -n "${1}" ]]; then
+        pointer="${1}";
+    elif [[ "${2}" == 'detect' && "$(get_git_branch)" != 'master' ]]; then
+        pointer="$(get_git_branch)";
+    else
+        error='Pointer missing for this operation';
+    fi
 }
 
 __gi_br_action_checkout () {
