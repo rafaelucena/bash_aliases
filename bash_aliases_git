@@ -82,35 +82,6 @@ gipx () {
 # PRINT COMMAND FIXED
 # COMMENTS @TODO
 gibr () {
-    local action='';
-    local pointer='';
-    local question='';
-
-    # If we don't have any parameter, I assume we just want to see local branches
-    if [[ -z $1 ]]; then
-        action='branch';
-    else
-        __gi_br_set_command $@;
-
-        __gi_br_set_question;
-
-        if [[ -n "$question" ]]; then
-            local answer='';
-
-            read -p "$(echo -e $question)" -n 1 -r answer
-            echo    # (optional) move to a new line
-            if [[ $answer =~ ^[Yy]$ ]]; then
-                true;
-            else
-                return;
-            fi
-        fi
-    fi
-
-    __gi_print_execute;
-}
-
-gitest () {
     local error='';
     local question='';
     local action='';
@@ -150,7 +121,7 @@ gitest () {
             fi
 
             # If no errors were found, we keep on to execution passing only the usable variables
-            __gi_global_print_execute "${action}" "${pointer}";
+            __gi_global_print_execute "${action}" "${pointer}"; #'debug';
         fi
     fi
 }
