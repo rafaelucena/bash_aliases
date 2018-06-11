@@ -125,12 +125,3 @@ gibr () {
         fi
     fi
 }
-
-gotomap () {
-    basepath=${PWD##*/};
-    basepath=${basepath,,};
-    fullpath=${PWD};
-
-    tag="<local name=\"$basepath\" path=\"$fullpath\"></local>"
-    echo "$tag";
-}

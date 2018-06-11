@@ -30,13 +30,13 @@ get_git_branch () {
             branchPrefix=' (';
             branchSufix=')';
             ;;
-        *)
+        '')
             ;;
     esac
 
     git branch 2> /dev/null | sed -e '/^[^*]/d' -e "s/* \(.*\)/$branchPrefix\1$branchSufix/";
 }
-export PS1="\[\033[01;32m\]\u \[\033[01;34m\]\w\[\033[01;33m\]\$(get_git_branch type_a)\[\033[00m\] $ "
+export PS1="\[\033[01;32m\]\u \[\033[01;34m\]\w\[\033[01;33m\]\$(get_git_branch type_b)\[\033[00m\] $ "
 
 # quick directory movement
 alias ..='cd ..';
@@ -135,4 +135,16 @@ goto () {
             break;
         fi
     done
+}
+
+mapme () {
+    local basepath=${PWD##*/};
+    local basepath=${basepath,,};
+    local fullpath=${PWD};
+
+    local tag="$(dye blue)<tag>$(dye undye)$basepath$(dye blue)</tag>$(dye undye)";
+    local path="$(dye cyan)<path>$(dye undye)$fullpath$(dye cyan)</path>$(dye undye)";
+    local local="$(dye green)<local>$(dye undye)\n\t${tag}\n\t${path}$(dye green)\n</local>$(dye undye)";
+
+    echo -e "${local}";
 }
