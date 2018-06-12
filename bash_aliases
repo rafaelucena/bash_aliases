@@ -119,7 +119,7 @@ function dye {
     echo $color;
 }
 
-goto () {
+function goto () {
     # change this file to the place where your map file is
     # /home/rafa/.goto_map.xml
     gotomap='local goto_map file';
@@ -137,14 +137,18 @@ goto () {
     done
 }
 
-mapme () {
+function mapme () {
     local basepath=${PWD##*/};
-    local basepath=${basepath,,};
+    local tagName=${basepath,,};
     local fullpath=${PWD};
 
-    local tag="$(dye blue)<tag>$(dye undye)$basepath$(dye blue)</tag>$(dye undye)";
-    local path="$(dye cyan)<path>$(dye undye)$fullpath$(dye cyan)</path>$(dye undye)";
-    local local="$(dye green)<local>$(dye undye)\n\t${tag}\n\t${path}$(dye green)\n</local>$(dye undye)";
+    if [[ -n ${1} ]]; then
+        tagName=${1};
+    fi
+
+    local tag="$(dye green)<tag>$(dye undye)${tagName}$(dye green)</tag>$(dye undye)";
+    local path="$(dye cyan)<path>$(dye undye)${fullpath}$(dye cyan)</path>$(dye undye)";
+    local local="$(dye orange)<local>$(dye undye)\n\t${tag}\n\t${path}$(dye orange)\n</local>$(dye undye)";
 
     echo -e "${local}";
 }
