@@ -119,19 +119,16 @@ function dye {
     echo $color;
 }
 
+readonly GOTO_MAP_FILE='/home/user/.goto_map.xml';
+
 function goto () {
-    # change this file to the place where your map file is
-    # /home/rafa/.goto_map.xml
-    gotomap='local goto_map file';
+    tags=($(grep -oP '(?<=tag>)[^<]+' ${GOTO_MAP_FILE}))
+    paths=($(grep -oP '(?<=path>)[^<]+' ${GOTO_MAP_FILE}))
 
-    tags=($(grep -oP '(?<=tag>)[^<]+' $gotomap))
-    paths=($(grep -oP '(?<=path>)[^<]+' $gotomap))
-
-    for i in ${!tags[*]}
-    do
-        if [[ "${tags[$i]}" == "$1"* ]]; then
-            echo "cd" "${paths[$i]}" "(${tags[$i]})";
-            cd "${paths[$i]}";
+    for i in ${!tags[*]}; do
+        if [[ "${tags[${i}]}" == "${1}"* ]]; then
+            echo "cd" "${paths[${i}]}" "(${tags[${i}]})";
+            cd "${paths[${i}]}";
             break;
         fi
     done
@@ -139,11 +136,13 @@ function goto () {
 
 function mapme () {
     local basepath=${PWD##*/};
-    local tagName=${basepath,,};
     local fullpath=${PWD};
 
+    local tagName='';
     if [[ -n ${1} ]]; then
         tagName=${1};
+    else
+        tagName=${basepath,,};
     fi
 
     local tag="$(dye green)<tag>$(dye undye)${tagName}$(dye green)</tag>$(dye undye)";
