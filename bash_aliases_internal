@@ -10,3 +10,14 @@ function __mapme_replace() {
 
     sed -i -e "${line}s${separator}${find}${separator}${replace}${separator}g" "${GOTO_TEST_FILE}";
 }
+
+function __mapme_insert() {
+    local separator='|';
+
+    # required
+    local find=".*";
+    local replace="${1}";
+    local line="${2}";
+
+    sed -i -e "${line}s${separator}${find}${separator}${replace}${separator}g" "${GOTO_TEST_FILE}";
+}
