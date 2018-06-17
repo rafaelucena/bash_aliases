@@ -1,0 +1,12 @@
+function __mapme_replace() {
+    local separator='|';
+
+    # required
+    local find=">${1}<";
+    local replace=">${2}<";
+
+    # optional
+    local line="${3}";
+
+    sed -i -e "${line}s${separator}${find}${separator}${replace}${separator}g" "${GOTO_TEST_FILE}";
+}

@@ -1,5 +1,8 @@
 # NOT ALIASES BUT HELPFUL ANYWAY
 # include aliases for git
+if [ -f ~/.bash_aliases_internal ]; then
+    . ~/.bash_aliases_internal
+fi
 if [ -f ~/.bash_aliases_git_internal ]; then
     . ~/.bash_aliases_git_internal
 fi
@@ -120,9 +123,7 @@ function dye {
 }
 
 readonly GOTO_MAP_FILE='/home/user/.goto_map.xml';
-#readonly GOTO_MAP_FILE='/home/rafa/.goto_map.xml';
 readonly GOTO_MAP_FILE='/home/user/test.xml';
-#readonly GOTO_TEST_FILE='/home/rafa/test.xml';
 
 function goto () {
     tags=($(grep -oP '(?<=tag>)[^<]+' ${GOTO_MAP_FILE}))
@@ -153,8 +154,4 @@ function mapme () {
     local local="$(dye orange)<local>$(dye undye)\n\t${tag}\n\t${path}$(dye orange)\n</local>$(dye undye)";
 
     echo -e "${local}";
-}
-
-function __mapme_replace() {
-    sed -i -e 's/local/remote/g' '/home/rafa/test.xml';
 }
