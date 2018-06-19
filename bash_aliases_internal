@@ -1,11 +1,11 @@
 function __mapme_replace() {
     local separator='|';
 
-    # required
+    # REQUIRED
     local find=">${1}<";
     local replace=">${2}<";
 
-    # optional
+    # OPTIONAL
     local line="${3}";
 
     sed -i -e "${line}s${separator}${find}${separator}${replace}${separator}g" "${GOTO_TEST_FILE}";
@@ -14,9 +14,12 @@ function __mapme_replace() {
 function __mapme_insert() {
     local separator='|';
 
-    # required
+    # REQUIRED
     local find=".*";
-    local replace="${1}";
+    # using sed to accomodate content of the line that will be replaced
+    local beforeReplace=$(sed "${2}!d" "${GOTO_TEST_FILE}");
+    # pre-pending old string to new string
+    local replace="${beforeReplace}${1}";
     local line="${2}";
 
     sed -i -e "${line}s${separator}${find}${separator}${replace}${separator}g" "${GOTO_TEST_FILE}";

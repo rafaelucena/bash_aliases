@@ -123,7 +123,7 @@ function dye {
 }
 
 readonly GOTO_MAP_FILE='/home/user/.goto_map.xml';
-readonly GOTO_MAP_FILE='/home/user/test.xml';
+readonly GOTO_TEST_FILE='/home/user/test.xml';
 
 function goto () {
     tags=($(grep -oP '(?<=tag>)[^<]+' ${GOTO_MAP_FILE}))
