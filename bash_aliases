@@ -153,5 +153,6 @@ function mapme () {
     local path="$(dye cyan)<path>$(dye undye)${fullpath}$(dye cyan)</path>$(dye undye)";
     local local="$(dye orange)<local>$(dye undye)\n\t${tag}\n\t${path}$(dye orange)\n</local>$(dye undye)";
 
+    #__mapme_insert "\n\t<local>\n\t\t<tag>eita</tag>\n\t\t<path>/eita/giovana</path>\n\t</local>" 6
     echo -e "${local}";
 }
