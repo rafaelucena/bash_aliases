@@ -139,20 +139,22 @@ function goto () {
 }
 
 function mapme () {
-    local basepath=${PWD##*/};
-    local fullpath=${PWD};
+    local basePath=${PWD##*/};
+    local fullPath=${PWD};
 
     local tagName='';
     if [[ -n ${1} ]]; then
         tagName=${1};
     else
-        tagName=${basepath,,};
+        tagName=${basePath,,};
     fi
 
-    local tag="$(dye green)<tag>$(dye undye)${tagName}$(dye green)</tag>$(dye undye)";
-    local path="$(dye cyan)<path>$(dye undye)${fullpath}$(dye cyan)</path>$(dye undye)";
-    local local="$(dye orange)<local>$(dye undye)\n\t${tag}\n\t${path}$(dye orange)\n</local>$(dye undye)";
+    local tagPrint="$(dye green)<tag>$(dye undye)${tagName}$(dye green)</tag>$(dye undye)";
+    local pathPrint="$(dye cyan)<path>$(dye undye)${fullPath}$(dye cyan)</path>$(dye undye)";
+    local localPrint="$(dye orange)<local>$(dye undye)\n\t${tagPrint}\n\t${pathPrint}$(dye orange)\n</local>$(dye undye)";
 
-    #__mapme_insert "\n\t<local>\n\t\t<tag>eita</tag>\n\t\t<path>/eita/giovana</path>\n\t</local>" 6
-    echo -e "${local}";
+    local newLocal="<local>\n\t<tag>${tagName}</tag>\n\t<path>${fullPath}</path>\n</local>";
+
+    __mapme_insert "${newLocal}" 1
+    echo -e "${localPrint}";
 }
