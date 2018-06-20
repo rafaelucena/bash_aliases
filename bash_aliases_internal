@@ -12,15 +12,14 @@ function __mapme_replace() {
 }
 
 function __mapme_insert() {
+    #__mapme_insert "<local>\n\t<tag>eita</tag>\n\t<path>/eita/giovana</path>\n</local>" 1
     local separator='|';
 
     # REQUIRED
-    local find=".*";
-    # using sed to accomodate content of the line that will be replaced
-    local beforeReplace=$(sed "${2}!d" "${GOTO_TEST_FILE}");
-    # pre-pending old string to new string
-    local replace="${beforeReplace}${1}";
-    local line="${2}";
+    local insert="${1}";
 
-    sed -i -e "${line}s${separator}${find}${separator}${replace}${separator}g" "${GOTO_TEST_FILE}";
+    # OPTIONAL
+    local afterLine="${2}";
+
+    sed -i "${afterLine}a ${insert}" "${GOTO_TEST_FILE}";
 }
