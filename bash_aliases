@@ -143,8 +143,8 @@ function mapme () {
     local fullPath=${PWD};
 
     local tagName='';
-    if [[ -n ${1} ]]; then
-        tagName=${1};
+    if [[ -n "${1}" ]]; then
+        tagName="${1}";
     else
         tagName=${basePath,,};
     fi

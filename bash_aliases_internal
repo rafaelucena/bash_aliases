@@ -1,3 +1,11 @@
+function __mapme_file() {
+    if [ -z "${1}" ]; then
+        echo "${GOTO_MAP_FILE}";
+    else
+        echo "${GOTO_TEST_FILE}";
+    fi
+}
+
 function __mapme_replace() {
     local separator='|';
 
@@ -8,7 +16,7 @@ function __mapme_replace() {
     # OPTIONAL
     local line="${3}";
 
-    sed -i -e "${line}s${separator}${find}${separator}${replace}${separator}g" "${GOTO_TEST_FILE}";
+    sed -i -e "${line}s${separator}${find}${separator}${replace}${separator}g" $(__mapme_file);
 }
 
 function __mapme_insert() {
@@ -21,5 +29,5 @@ function __mapme_insert() {
     # OPTIONAL
     local afterLine="${2}";
 
-    sed -i "${afterLine}a ${insert}" "${GOTO_TEST_FILE}";
+    sed -i "${afterLine}a ${insert}" $(__mapme_file);
 }
