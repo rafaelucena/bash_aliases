@@ -158,3 +158,17 @@ function mapme () {
     __mapme_insert "${newLocal}" 1
     echo -e "${localPrint}";
 }
+
+function _mapme_test () {
+    local tagName='';
+    if [ -n "${1}" ]; then
+        tagName="${1}";
+    else
+        local basePath=${PWD##*/};
+        tagName=${basePath,,};
+    fi
+
+    #check if tag/address already exist on the file
+        #if so, do something
+        #if else; do great
+}
