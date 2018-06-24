@@ -168,6 +168,7 @@ function _mapme_test () {
         tagName=${basePath,,};
     fi
 
+    echo $(sed -n  "\|${tagName}|=" $(__mapme_file 'test'));
     #check if tag/address already exist on the file
         #if so, do something
         #if else; do great
