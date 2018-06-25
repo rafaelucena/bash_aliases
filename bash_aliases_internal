@@ -31,3 +31,15 @@ function __mapme_insert() {
 
     sed -i "${afterLine}a ${insert}" $(__mapme_file);
 }
+
+function __mapme_check_exists () {
+    local findTag="${1}";
+#    local findPath="${2}";
+    local findPath=${PWD};
+
+    local lineTag=$(sed -n  "\|tag>${findTag}.*</tag|=" $(__mapme_file 'test'));
+    local linePath=$(sed -n  "\|path>${findPath}</path|=" $(__mapme_file 'test'));
+
+    echo "Tag: ${findTag} found at ${lineTag}";
+    echo "Path: ${findPath} found at ${linePath}";
+}
