@@ -139,24 +139,10 @@ function goto () {
 }
 
 function mapme () {
-    local basePath=${PWD##*/};
-    local fullPath=${PWD};
+    local tagPath=$(__mapme_generate_tag_path);
+    local tagName=$(__mapme_generate_tag_name "${1}");
 
-    local tagName='';
-    if [[ -n "${1}" ]]; then
-        tagName="${1}";
-    else
-        tagName=${basePath,,};
-    fi
-
-    local tagPrint="$(dye green)<tag>$(dye undye)${tagName}$(dye green)</tag>$(dye undye)";
-    local pathPrint="$(dye cyan)<path>$(dye undye)${fullPath}$(dye cyan)</path>$(dye undye)";
-    local localPrint="$(dye orange)<local>$(dye undye)\n\t${tagPrint}\n\t${pathPrint}$(dye orange)\n</local>$(dye undye)";
-
-    local newLocal="<local>\n\t<tag>${tagName}</tag>\n\t<path>${fullPath}</path>\n</local>";
-
-    __mapme_insert "${newLocal}" 1
-    echo -e "${localPrint}";
+    __mapme_insert_tags 'print';
 }
 
 function _mapme_test () {
