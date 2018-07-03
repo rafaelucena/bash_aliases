@@ -142,7 +142,7 @@ function mapme () {
     local tagPath=$(__mapme_generate_tag_path);
     local tagName=$(__mapme_generate_tag_name "${1}");
 
-    __mapme_insert_tags 'print';
+    __mapme_insert 'print';
 }
 
 function _mapme_test () {

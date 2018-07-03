@@ -12,7 +12,7 @@ function __mapme_generate_tag_path() {
 }
 
 function __mapme_generate_tag_name() {
-    local basePath=${tagPath##*/};
+    local basePath="${tagPath##*/}";
 
     local tagName='';
     if [ -n "${1}" ]; then
@@ -24,25 +24,24 @@ function __mapme_generate_tag_name() {
     echo "${tagName}";
 }
 
-function __mapme_insert_tags() {
-    local insertTags=$(__mapme_prepare_insert);
-    $(__mapme_insert "${insertTags}");
+function __mapme_insert() {
+    local insertTags=$(__mapme_insert_prepare);
+    $(__mapme_insert_tags "${insertTags}");
 
     if [ "${1}" == 'print' ]; then
-        local printInsertTags=$(__mapme_prepare_insert_print);
-        __mapme_print "${printInsertTags}";
-#        echo -e ${printInsertTags};
+        local printInsertTags=$(__mapme_insert_prepare_print);
+        __mapme_insert_print "${printInsertTags}";
     fi
 }
 
-function __mapme_prepare_insert() {
+function __mapme_insert_prepare() {
     local tagPath="${tagPath}";
     local tagName="${tagName}";
 
     echo "<local>\n\t<tag>${tagName}</tag>\n\t<path>${tagPath}</path>\n</local>";
 }
 
-function __mapme_prepare_insert_print() {
+function __mapme_insert_prepare_print() {
     local tagPath="${tagPath}";
     local tagName="${tagName}";
 
@@ -52,11 +51,11 @@ function __mapme_prepare_insert_print() {
     echo "$(dye orange)<local>$(dye undye)\n\t${tagNamePrint}\n\t${tagPathPrint}$(dye orange)\n</local>$(dye undye)";
 }
 
-function __mapme_print() {
+function __mapme_insert_print() {
     echo -e "${1}";
 }
 
-function __mapme_insert() {
+function __mapme_insert_tags() {
     local separator='|';
 
     # REQUIRED
