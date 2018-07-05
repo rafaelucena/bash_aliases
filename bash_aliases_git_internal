@@ -224,16 +224,16 @@ __gicm_action_setup () {
             __gicm_action_commit "${firstPointer}";
             ;;
         # Creating a new commit and setting a prefix
-        '-p'|'-s'|'-prefix'|'-save')
+        '-p'|'-prefix')
             # Only ${firstPointer} is necessary here
             __gicm_action_set_commit_prefix "${firstPointer}";
             ;;
-#        '-d'|'-del'|'-delete')
-#            # ${firstAction} and ${firstPointer} are necessary here
-#            __gi_br_action_delete_up "${secondAction}" "${firstPointer}";
-#            ;;
+        '-l'|'-last')
+            # Only ${firstAction} is necessary here
+            __gicm_action_get_commit_last;
+            ;;
         *)
-            # Checking out branches
+            # Super commit reading a prefix if it exists
             if [[ -z "${firstAction}" && -n "${firstPointer}" ]]; then
                 # Only ${firstPointer} is necessary here
                 __gicm_action_commit_prefix "${firstPointer}";
@@ -248,6 +248,8 @@ __gicm_action_setup () {
 
 function __gicm_action_commit() {
     if [ -n "${1}" ]; then
+        GICM_COMMIT_LAST="${1}";
+
         action='commit -m';
         pointer="\"${1}\"";
     else
@@ -281,5 +283,13 @@ function __gicm_action_commit_prefix() {
         __gicm_action_commit "${adaptedMessage}";
     else
         error='missing pointer';
+    fi
+}
+
+function __gicm_action_get_commit_last() {
+    if [ -n "${GICM_COMMIT_LAST}" ]; then
+        __gicm_action_commit "${GICM_COMMIT_LAST}";
+    else
+        error='No commits were found';
     fi
 }

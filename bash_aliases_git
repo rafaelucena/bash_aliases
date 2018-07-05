@@ -15,6 +15,9 @@ alias gist='git status';
 # COMMENTS @TODO
 gicm () {
     GICM_COMMIT_PREFIX="${GICM_COMMIT_PREFIX}";
+    GICM_COMMIT_LAST="${GICM_COMMIT_LAST}";
+    GICM_COMMIT_BRANCH="${GICM_COMMIT_BRANCH}";
+
     local error='';
     local question='';
     local action='';
