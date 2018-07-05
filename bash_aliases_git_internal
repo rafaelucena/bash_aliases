@@ -51,6 +51,10 @@ __gi_global_filter_input () {
     local countActions=0;
     local countPointers=0;
 
+    #INHERITED
+    local limitAction="${limitAction}";
+    local limitPointer="${limitPointer}";
+
     # Now, if I do have parameters, I will evaluate them and allocate into specific variables
     for input in "${@}"; do
         # And now I check if current variable is a parameter or not
@@ -209,4 +213,48 @@ __gi_br_helper_pointer () {
 __gi_br_action_checkout () {
     action='checkout';
     pointer="${1}";
+}
+
+## GICM FUNCTIONS
+__gicm_action_setup () {
+    case "${firstAction}" in
+        # Creating a new commit with the common standard
+        '-m'|'-message')
+            # Only ${firstPointer} is necessary here
+            __gicm_action_commit "${firstPointer}";
+            ;;
+#        # Listing branches
+#        '-l'|'-r'|'-a'|'-local'|'-list'|'-remote'|'-all')
+#            # Only ${firstAction} is necessary here
+#            __gi_br_action_list_up "${firstAction}";
+#            ;;
+#        '-d'|'-del'|'-delete')
+#            # ${firstAction} and ${firstPointer} are necessary here
+#            __gi_br_action_delete_up "${secondAction}" "${firstPointer}";
+#            ;;
+        *)
+            # Checking out branches
+            echo 'caramba!';
+            if [[ -z "${firstAction}" && -n "${firstPointer}" ]]; then
+                # Only ${firstPointer} is necessary here
+#                __gi_br_action_checkout "${firstPointer}";
+                echo 'obrigado!';
+            else
+                # @TODO - gicm without parameters will output usage
+                echo 'eitas';
+            fi
+
+            ;;
+    esac
+}
+
+function __gicm_action_commit () {
+    if [[ -n "${1}" ]]; then
+        action='commit -m';
+        pointer="\"${1}\"";
+    else
+        error='missing pointer';
+    fi
+
+#    echo "${action} ${pointer}";
 }

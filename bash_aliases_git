@@ -24,6 +24,34 @@ gicm () {
     fi
 }
 
+_gicm () {
+    local error='';
+    local question='';
+    local action='';
+    local pointer='';
+
+    local firstAction='';
+    local secondAction='';
+    local limitAction=2;
+
+    local firstPointer='';
+    local secondPointer='';
+    local limitPointer=1;
+
+    # First we fill the variables according to the information received
+    __gi_global_filter_input "${@}";
+
+    if [ -n "${error}" ]; then
+        # @TODO - optimize errors
+        echo "${error}";
+    else
+        __gicm_action_setup;
+
+        # If no errors were found, we keep on to execution passing only the usable variables
+        __gi_global_print_execute "${action}" "${pointer}" #'debug';
+    fi
+}
+
 # git diff
 # COLOR FIXED
 # SUBFUNCTIONS FIXED
