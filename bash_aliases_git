@@ -14,17 +14,7 @@ alias gist='git status';
 # PRINT COMMAND FIXED
 # COMMENTS @TODO
 gicm () {
-    local action='commit -m';
-    local pointer="\"$@\"";
-
-    if [[ -n $@ ]]; then
-        __gi_print_execute;
-    else
-        echo "Usage: gicm <commit message with quotes>";
-    fi
-}
-
-_gicm () {
+    GICM_COMMIT_PREFIX="${GICM_COMMIT_PREFIX}";
     local error='';
     local question='';
     local action='';
@@ -48,7 +38,7 @@ _gicm () {
         __gicm_action_setup;
 
         # If no errors were found, we keep on to execution passing only the usable variables
-        __gi_global_print_execute "${action}" "${pointer}" #'debug';
+        __gi_global_print_execute "${action}" "${pointer}"; #'debug';
     fi
 }
 
