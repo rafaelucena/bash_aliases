@@ -78,8 +78,8 @@ function __mapme_replace() {
     local separator='|';
 
     # REQUIRED
-    local find=">${1}<";
-    local replace=">${2}<";
+    local find=">${1}</";
+    local replace=">${2}</";
 
     # OPTIONAL
     local line="${3}";
@@ -87,13 +87,17 @@ function __mapme_replace() {
     sed -i -e "${line}s${separator}${find}${separator}${replace}${separator}g" $(__mapme_file);
 }
 
-function __mapme_check_exists () {
-    local findTag="${1}";
-    local findPath="${PWD}";
+function __mapme_check_exists() {
+    local findUsage='';
+    local lineUsage='';
 
-    local lineTag=$(sed -n "\|<tag>${findTag}.*</tag>|=" $(__mapme_file 'test'));
-    local linePath=$(sed -n "\|<path>${findPath}</path>|=" $(__mapme_file 'test'));
+    if [ -n "${1}" ]; then
+        findUsage="${1}";
+        lineUsage=$(sed -n "\|<tag>${findTag}</tag>|=" $(__mapme_file 'test'));
+    else
+        findUsage="${PWD}";
+        lineUsage=$(sed -n "\|<path>${findPath}</path>|=" $(__mapme_file 'test'));
+    fi
 
-    echo "Tag: ${findTag} found at ${lineTag}";
-    echo "Path: ${findPath} found at ${linePath}";
+    echo "To test: ${findUsage} found at ${lineUsage}";
 }
