@@ -288,18 +288,18 @@ function __gicm_action_set_commit_prefix() {
 
 function __gicm_action_commit_prefix() {
     if [ -n "${1}" ]; then
-        local adaptedMessage='';
+        local commitMsg='';
         if [ -n "${GICM_COMMIT_PREFIX}" ]; then
-            adaptedMessage="${GICM_COMMIT_PREFIX} (${1})";
+            commitMsg="${GICM_COMMIT_PREFIX} (${1})";
 
             if [ "${GICM_COMMIT_PREFIX_BRANCH}" != "$(get_git_branch)" ]; then
                 question='The prefix commit was made on another branch, are you sure you want to continue?';
             fi
         else
-            adaptedMessage="${1}";
+            commitMsg="${1}";
         fi
 
-        __gicm_action_commit "${adaptedMessage}";
+        __gicm_action_commit "${commitMsg}";
     else
         error='missing pointer';
     fi
@@ -307,11 +307,11 @@ function __gicm_action_commit_prefix() {
 
 function __gicm_action_get_commit_last() {
     if [ -n "${GICM_COMMIT_LAST}" ]; then
-        __gicm_action_commit "${GICM_COMMIT_LAST}";
-
         if [ "${GICM_COMMIT_LAST_BRANCH}" != "$(get_git_branch)" ]; then
             question='The last commit was made on another branch, are you sure you want to continue?';
         fi
+
+        __gicm_action_commit "${GICM_COMMIT_LAST}";
     else
         error='No commits were found';
     fi
@@ -324,4 +324,13 @@ function __gicm_action_get_commit_view() {
     if [[ -z "${1}" || ("${1}" == '-p' || "${1}" == '-prefix') ]]; then
         echo "Prepend commit: ${GICM_COMMIT_PREFIX} on ${GICM_COMMIT_PREFIX_BRANCH}";
     fi
+}
+
+function __gicm_action_clear_cache() {
+    if [ "${GICM_COMMIT_PREFIX_BRANCH}" != "$(get_git_branch)" ]; then
+        GICM_COMMIT_PREFIX='';
+        GICM_COMMIT_PREFIX_BRANCH="$(get_git_branch)";
+    fi
+    GICM_COMMIT_LAST='';
+    GICM_COMMIT_LAST_BRANCH="$(get_git_branch)";
 }

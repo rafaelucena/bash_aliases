@@ -47,6 +47,7 @@ gicm () {
             if [[ "${answer}" =~ ^[Yy]$ ]]; then
                 true;
             else
+                __gicm_action_clear_cache;
                 return;
             fi
         fi
