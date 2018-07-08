@@ -216,7 +216,16 @@ __gi_br_action_checkout () {
 }
 
 ## GICM FUNCTIONS
-__gicm_action_setup () {
+function __gicm_global_setup() {
+    GICM_COMMIT_PREFIX="${GICM_COMMIT_PREFIX}";
+    GICM_COMMIT_PREFIX_BRANCH="${GICM_COMMIT_PREFIX_BRANCH}";
+    GICM_COMMIT_LAST="${GICM_COMMIT_LAST}";
+    GICM_COMMIT_LAST_BRANCH="${GICM_COMMIT_LAST_BRANCH}";
+}
+
+function __gicm_action_setup () {
+    local secondAction="${secondAction}";
+
     case "${firstAction}" in
         # Creating a new commit with the common standard
         '-m'|'-message')
@@ -231,6 +240,10 @@ __gicm_action_setup () {
         '-l'|'-last')
             # Only ${firstAction} is necessary here
             __gicm_action_get_commit_last;
+            ;;
+        '-v'|'-view')
+            # Only ${secondAction} is necessary here
+            __gicm_action_get_commit_view "${secondAction}";
             ;;
         *)
             # Super commit reading a prefix if it exists
@@ -249,6 +262,7 @@ __gicm_action_setup () {
 function __gicm_action_commit() {
     if [ -n "${1}" ]; then
         GICM_COMMIT_LAST="${1}";
+        GICM_COMMIT_LAST_BRANCH="$(get_git_branch)";
 
         action='commit -m';
         pointer="\"${1}\"";
@@ -262,6 +276,7 @@ function __gicm_action_commit() {
 function __gicm_action_set_commit_prefix() {
     if [ -n "${1}" ]; then
         GICM_COMMIT_PREFIX="${1}";
+        GICM_COMMIT_PREFIX_BRANCH="$(get_git_branch)";
 
         __gicm_action_commit "${GICM_COMMIT_PREFIX}";
     else
@@ -276,6 +291,10 @@ function __gicm_action_commit_prefix() {
         local adaptedMessage='';
         if [ -n "${GICM_COMMIT_PREFIX}" ]; then
             adaptedMessage="${GICM_COMMIT_PREFIX} (${1})";
+
+            if [ "${GICM_COMMIT_PREFIX_BRANCH}" != "$(get_git_branch)" ]; then
+                question='The prefix commit was made on another branch, are you sure you want to continue?';
+            fi
         else
             adaptedMessage="${1}";
         fi
@@ -289,7 +308,20 @@ function __gicm_action_commit_prefix() {
 function __gicm_action_get_commit_last() {
     if [ -n "${GICM_COMMIT_LAST}" ]; then
         __gicm_action_commit "${GICM_COMMIT_LAST}";
+
+        if [ "${GICM_COMMIT_LAST_BRANCH}" != "$(get_git_branch)" ]; then
+            question='The last commit was made on another branch, are you sure you want to continue?';
+        fi
     else
         error='No commits were found';
+    fi
+}
+
+function __gicm_action_get_commit_view() {
+    if [[ -z "${1}" || ("${1}" == '-l' || "${1}" == '-last') ]]; then
+        echo "Last commit: ${GICM_COMMIT_LAST} on ${GICM_COMMIT_LAST_BRANCH}";
+    fi
+    if [[ -z "${1}" || ("${1}" == '-p' || "${1}" == '-prefix') ]]; then
+        echo "Prepend commit: ${GICM_COMMIT_PREFIX} on ${GICM_COMMIT_PREFIX_BRANCH}";
     fi
 }

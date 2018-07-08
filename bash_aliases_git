@@ -14,10 +14,6 @@ alias gist='git status';
 # PRINT COMMAND FIXED
 # COMMENTS @TODO
 gicm () {
-    GICM_COMMIT_PREFIX="${GICM_COMMIT_PREFIX}";
-    GICM_COMMIT_LAST="${GICM_COMMIT_LAST}";
-    GICM_COMMIT_BRANCH="${GICM_COMMIT_BRANCH}";
-
     local error='';
     local question='';
     local action='';
@@ -31,6 +27,9 @@ gicm () {
     local secondPointer='';
     local limitPointer=1;
 
+    # Initialize the global variables to be used later
+    __gicm_global_setup;
+
     # First we fill the variables according to the information received
     __gi_global_filter_input "${@}";
 
@@ -39,6 +38,18 @@ gicm () {
         echo "${error}";
     else
         __gicm_action_setup;
+
+        if [[ -n "${question}" ]]; then
+            local answer='';
+
+            read -p "$(echo -e ${question})" -n 1 -r answer
+            echo    # (optional) move to a new line
+            if [[ "${answer}" =~ ^[Yy]$ ]]; then
+                true;
+            else
+                return;
+            fi
+        fi
 
         # If no errors were found, we keep on to execution passing only the usable variables
         __gi_global_print_execute "${action}" "${pointer}"; #'debug';
