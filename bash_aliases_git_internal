@@ -227,28 +227,30 @@ function __gicm_action_setup () {
     local secondAction="${secondAction}";
 
     case "${firstAction}" in
-        # Creating a new commit with the common standard
+        # Create a new commit with the common standard
         '-m'|'-message')
-            # Only ${firstPointer} is necessary here
             __gicm_action_commit "${firstPointer}";
             ;;
-        # Creating a new commit and setting a prefix
+        # Clear all the global variables for the GICM command
+        '-c'|'-clear')
+            __gicm_action_cache_clear "${firstAction}";
+            ;;
+        # Set a prefix and commits it at the same time as a base
         '-p'|'-prefix')
-            # Only ${firstPointer} is necessary here
             __gicm_action_set_commit_prefix "${firstPointer}";
             ;;
+        # Execute the last known commit, if it exists
         '-l'|'-last')
-            # Only ${firstAction} is necessary here
             __gicm_action_get_commit_last;
             ;;
+        # View defined global variables for the GICM command
         '-v'|'-view')
-            # Only ${secondAction} is necessary here
             __gicm_action_get_commit_view "${secondAction}";
             ;;
+        # Assuming we have a message, we look for a prefix, if it exists, and append to it before commiting.
         *)
             # Super commit reading a prefix if it exists
             if [[ -z "${firstAction}" && -n "${firstPointer}" ]]; then
-                # Only ${firstPointer} is necessary here
                 __gicm_action_commit_prefix "${firstPointer}";
             else
                 # @TODO - gicm without parameters will output usage
@@ -333,14 +335,19 @@ function __gicm_action_get_commit_view() {
     fi
 }
 
-function __gicm_action_clear_cache() {
-    if [ "${GICM_COMMIT_PREFIX_BRANCH}" != "$(get_git_branch)" ]; then
+function __gicm_action_cache_clear() {
+    if [[ (-n "${1}") || ("${GICM_COMMIT_PREFIX_BRANCH}" != "$(get_git_branch)") ]]; then
         GICM_COMMIT_PREFIX='';
         GICM_COMMIT_PREFIX_BRANCH='';
     fi
 
-    if [ "${GICM_COMMIT_LAST_BRANCH}" != "$(get_git_branch)" ]; then
+    if [[ (-n "${1}") || ("${GICM_COMMIT_LAST_BRANCH}" != "$(get_git_branch)") ]]; then
         GICM_COMMIT_LAST='';
         GICM_COMMIT_LAST_BRANCH='';
     fi
+}
+
+function __gicm_action_cache_branch() {
+    GICM_COMMIT_PREFIX_BRANCH="$(get_git_branch)";
+    GICM_COMMIT_LAST_BRANCH="$(get_git_branch)";
 }

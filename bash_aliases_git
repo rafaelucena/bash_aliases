@@ -45,9 +45,10 @@ gicm () {
             read -p "$(echo -e ${question})" -n 1 -r answer
             echo    # (optional) move to a new line
             if [[ "${answer}" =~ ^[Yy]$ ]]; then
+                __gicm_action_cache_branch;
                 true;
             else
-                __gicm_action_clear_cache;
+                __gicm_action_cache_clear;
                 return;
             fi
         fi
