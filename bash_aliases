@@ -159,3 +159,48 @@ function _mapme_test () {
         #if so, do something
         #if else; do great
 }
+
+function readConfigFileTest()
+{
+    local continue=0;
+    local -a vars;
+    vars[0]="\[general\]";
+    vars[1]='\[carambola\]';
+#  section="$1"
+#  found=false
+#  while read line
+#  do
+#    [[ $found == false && "$line" != "[$section]" ]] &&  continue
+#    [[ $found == true && "${line:0:1}" = '[' ]] && break
+#    found=true
+#    echo "$line"
+#  done < /home/b4b06/test.txt
+
+    while read var value
+    do
+        local pattern="\[\w+\]";
+        if [[ "${var}" =~ $pattern ]]; then
+            if [[ "${var}" =~ ${vars[0]} || "${var}" =~ ${vars[1]} ]]; then
+                continue=1;
+            else
+                continue=0;
+            fi
+        fi
+
+        if [[ "${continue}" == 1 ]]; then
+            IFS='=' read -ra ADDR <<< "$var"
+            if [[ -n ${ADDR[0]} && -n ${ADDR[1]} ]]; then
+                local "${ADDR[0]}"="${ADDR[1]}";
+                echo "Variable: ${ADDR[0]} with value: ${ADDR[1]}";
+            fi
+        fi
+#        for i in "${ADDR[@]}"; do
+#            echo "$i"eita
+#        done
+#        echo "$var"
+#        echo "$var"="$value"
+#        export "$var"="$value"
+    done < /home/b4b06/test.txt
+
+    echo "sera que deu $eita";
+}
