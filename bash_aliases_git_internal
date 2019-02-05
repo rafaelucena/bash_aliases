@@ -45,6 +45,35 @@ __gi_file_extension_modifier () {
 
 ############### KEEPING EVERYTHING BEYOND THIS POINT
 ## GI GLOBAL
+function __gi_global_load_params () {
+    local continue=0;
+
+    if [[ -n "${1}" ]]; then
+        local section="\[${1}\]";
+    else
+        return '';
+    fi
+
+    local sectionPattern='\[\w+\]';
+    local parameterPattern='\w+=(''|\w+)';
+    while read var
+    do
+        if [[ "${var}" =~ ${sectionPattern} ]]; then
+            if [[ "${var}" =~ ${section} ]]; then
+                continue=1;
+            else
+                continue=0;
+            fi
+        fi
+
+        if [[ "${continue}" == 1 ]]; then
+            if [[ "${var}" =~ ${parameterPattern} ]]; then
+                echo ${var};
+            fi
+        fi
+    done < /home/b4b06/test.txt;
+}
+
 __gi_global_filter_input () {
     local isParameter='^-\w+';
 
@@ -123,7 +152,9 @@ __global_execute () {
     if [[ -n "${3}" ]]; then
         "${command}" ${2} "${3}";
     else
+#        set -x
         "${command}" ${2};
+#        set +x
     fi
 }
 
@@ -299,7 +330,7 @@ function __gicm_action_commit_prefix() {
         if [ -n "${GICM_COMMIT_PREFIX}" ]; then
             commitMsg="${GICM_COMMIT_PREFIX} (${1})";
 
-            if [[ ("${GICM_COMMIT_PREFIX_BRANCH}" != '') && ("${GICM_COMMIT_PREFIX_BRANCH}" != "$(get_git_branch)") ]]; then
+            if [[ -n "${GICM_COMMIT_PREFIX_BRANCH}" && "${GICM_COMMIT_PREFIX_BRANCH}" != "$(get_git_branch)" ]]; then
                 question='The prefix commit was made on another branch, are you sure you want to continue?';
             fi
         else
@@ -314,7 +345,7 @@ function __gicm_action_commit_prefix() {
 
 function __gicm_action_get_commit_last() {
     if [ -n "${GICM_COMMIT_LAST}" ]; then
-        if [[ ("${GICM_COMMIT_LAST_BRANCH}" != '') && ("${GICM_COMMIT_LAST_BRANCH}" != "$(get_git_branch)") ]]; then
+        if [[ -n "${GICM_COMMIT_LAST_BRANCH}" && "${GICM_COMMIT_LAST_BRANCH}" != "$(get_git_branch)" ]]; then
             question='The last commit was made on another branch, are you sure you want to continue?';
             __gicm_action_commit "${GICM_COMMIT_LAST}" "${GICM_COMMIT_LAST_BRANCH}";
         else
@@ -350,4 +381,42 @@ function __gicm_action_cache_clear() {
 function __gicm_action_cache_branch() {
     GICM_COMMIT_PREFIX_BRANCH="$(get_git_branch)";
     GICM_COMMIT_LAST_BRANCH="$(get_git_branch)";
+}
+
+## GIUI FUNCTIONS
+function __giui_action_setup () {
+    local secondAction="${secondAction}";
+
+    case "${firstAction}" in
+        #
+        '-n'|'-no-all')
+            #__gicm_action_set_commit_prefix "${firstPointer}";
+            ;;
+        #
+        '-u'|'-unchanged')
+            #__gicm_action_commit "${firstPointer}";
+            ;;
+        #
+        '-nu'|'-no-unchanged')
+            #__gicm_action_cache_clear "${firstAction}";
+            ;;
+        #
+        '-l'|'-list')
+            #__gicm_action_get_commit_last;
+            ;;
+        #
+        '-lu'|'-list-unchanged')
+            __giui_action_list_unchanged;
+            ;;
+        #
+        *)
+            # @TODO - gicm without parameters will output usage
+            echo 'eitas';
+            ;;
+    esac
+}
+
+function __giui_action_list_unchanged () {
+    action="ls-files -v";
+    pointer=":|: grep '^h'";
 }

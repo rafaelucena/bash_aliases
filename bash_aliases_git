@@ -159,3 +159,35 @@ gibr () {
         fi
     fi
 }
+
+#
+function giui () {
+    local error='';
+    local action='';
+    local pointer='';
+
+    local firstAction='';
+    local secondAction='';
+    local limitAction=2;
+
+    local firstPointer='';
+    local secondPointer='';
+    local limitPointer=1;
+
+    # First we fill the variables according to the information received
+    __gi_global_filter_input "${@}";
+
+    if [[ -n "${error}" ]]; then
+        # @TODO - optimize errors
+        echo "${error}";
+    else
+        __giui_action_setup;
+
+        if [[ -n "${error}" ]]; then
+            # @TODO - optimize errors
+            echo "${error}";
+        else
+            __gi_global_print_execute "${action}" "${pointer}";# 'debug';
+        fi
+    fi
+}
