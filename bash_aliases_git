@@ -165,6 +165,7 @@ function giui () {
     local error='';
     local action='';
     local pointer='';
+    local subtype='';
 
     local firstAction='';
     local secondAction='';
@@ -187,7 +188,7 @@ function giui () {
             # @TODO - optimize errors
             echo "${error}";
         else
-            __gi_global_print_execute "${action}" "${pointer}";# 'debug';
+            __gi_global_print_execute "${action}" "${pointer}" "${subtype}";# 'debug';
         fi
     fi
 }

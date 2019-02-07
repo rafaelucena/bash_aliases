@@ -43,6 +43,30 @@ __gi_file_extension_modifier () {
     echo "$pointer";
 }
 
+__global_print () {
+    local print_command='';
+
+    if [[ -n "${3}" ]]; then
+        print_command="$(dye cyan)${1}$(dye undye) $(dye red)${2}$(dye undye) $(dye orange)${3}$(dye undye);";
+    else
+        print_command="$(dye cyan)${1}$(dye undye) $(dye green)${2}$(dye undye);";
+    fi
+
+    echo -e "${print_command}";
+}
+
+__global_execute () {
+    local command="${1}";
+
+    if [[ -n "${3}" ]]; then
+        "${command}" ${2} "${3}";
+    else
+#        set -x
+        "${command}" ${2};
+#        set +x
+    fi
+}
+
 ############### KEEPING EVERYTHING BEYOND THIS POINT
 ## GI GLOBAL
 function __gi_global_load_params () {
@@ -125,37 +149,50 @@ __gi_global_filter_input () {
 
 __gi_global_print_execute () {
     if [[ -n "${1}" ]]; then
-        __global_print 'git' "${1}" "${2}";
+        __gi_global_print;
 
         # for now let's assume that anything sent as a third parameter is the debug trigger
-        if [[ -z "${3}" ]]; then
-            __global_execute 'git' "${1}" "${2}";
+        if [[ -z "${4}" ]]; then
+            __gi_global_execute;
         fi
     fi
 }
 
-__global_print () {
+function __gi_global_print () {
     local print_command='';
+    local execute='git';
 
-    if [[ -n "${3}" ]]; then
-        print_command="$(dye cyan)${1}$(dye undye) $(dye red)${2}$(dye undye) $(dye orange)${3}$(dye undye);";
-    else
-        print_command="$(dye cyan)${1}$(dye undye) $(dye green)${2}$(dye undye);";
-    fi
+    case "${subtype}" in
+        'pipe')
+            print_command="$(dye cyan)${execute}$(dye undye) $(dye red)${action}$(dye undye) | $(dye orange)${pointer}$(dye undye);";
+            ;;
+        *)
+            if [[ -n "${pointer}" ]]; then
+                print_command="$(dye cyan)${execute}$(dye undye) $(dye red)${action}$(dye undye) $(dye orange)${pointer}$(dye undye);";
+            else
+                print_command="$(dye cyan)${execute}$(dye undye) $(dye green)${action}$(dye undye);";
+            fi
+            ;;
+    esac
 
     echo -e "${print_command}";
 }
 
-__global_execute () {
-    local command="${1}";
+function __gi_global_execute () {
+    local execute='git';
 
-    if [[ -n "${3}" ]]; then
-        "${command}" ${2} "${3}";
-    else
-#        set -x
-        "${command}" ${2};
-#        set +x
-    fi
+    case "${subtype}" in
+        'pipe')
+            ${execute} ${action} | eval ${pointer};
+            ;;
+        *)
+            if [[ -n "${pointer}" ]]; then
+                ${execute} ${action} "${pointer}";
+            else
+                ${execute} ${action};
+            fi
+            ;;
+    esac
 }
 
 ## GI_BR FUNCTIONS 3.0
@@ -418,5 +455,6 @@ function __giui_action_setup () {
 
 function __giui_action_list_unchanged () {
     action="ls-files -v";
-    pointer=":|: grep '^h'";
+    pointer="grep '^h'";
+    subtype='pipe';
 }
