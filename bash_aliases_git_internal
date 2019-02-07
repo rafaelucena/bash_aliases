@@ -431,11 +431,11 @@ function __giui_action_setup () {
             ;;
         #
         '-u'|'-unchanged')
-            #__gicm_action_commit "${firstPointer}";
+            __giui_action_unchanged "${firstPointer}";
             ;;
         #
         '-nu'|'-no-unchanged')
-            #__gicm_action_cache_clear "${firstAction}";
+            __giui_action_unchanged "${firstPointer}" '-no';
             ;;
         #
         '-l'|'-list')
@@ -453,8 +453,13 @@ function __giui_action_setup () {
     esac
 }
 
+function __giui_action_unchanged () {
+    action="update-index -${2}-assume-unchanged";
+    pointer="${1}";
+}
+
 function __giui_action_list_unchanged () {
-    action="ls-files -v";
+    action='ls-files -v';
     pointer="grep '^h'";
     subtype='pipe';
 }
