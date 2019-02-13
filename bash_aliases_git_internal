@@ -281,6 +281,9 @@ __gi_br_helper_pointer () {
 __gi_br_action_checkout () {
     action='checkout';
     pointer="${1}";
+
+    GIBR_LAST_BRANCH="$(get_git_branch)";
+    GIBR_CURRENT_BRANCH=${pointer};
 }
 
 ## GICM FUNCTIONS
@@ -462,4 +465,31 @@ function __giui_action_list () {
     action='ls-files -v';
     pointer="grep '${1}'";
     subtype='pipe';
+}
+
+### GIME functions
+function __gime_action_setup () {
+    local secondAction="${secondAction}";
+
+    case "${firstAction}" in
+        #
+        '-m'|'-master')
+            __gime_action_merge 'master';
+            #__gicm_action_set_commit_prefix "${firstPointer}";
+            ;;
+        *)
+            # Super commit reading a prefix if it exists
+            if [[ -z "${firstAction}" && -n "${firstPointer}" ]]; then
+                __gime_action_merge "${firstPointer}";
+            else
+                # @TODO - gicm without parameters will output usage
+                echo 'eitas';
+            fi
+            ;;
+    esac
+}
+
+function __gime_action_merge () {
+    action='merge';
+    pointer="${1}";
 }

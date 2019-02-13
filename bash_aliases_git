@@ -1,7 +1,6 @@
 #GIT COMMANDS
 # simple aliases
-# alias gibr='git branch';
-alias gime='git merge master';
+#alias gime='git merge master';
 alias gipu='git pull';  #down <==
 alias gist='git status';
 
@@ -189,6 +188,39 @@ function giui () {
             echo "${error}";
         else
             __gi_global_print_execute "${action}" "${pointer}" "${subtype}";# 'debug';
+        fi
+    fi
+}
+
+#
+function gime () {
+    local error='';
+    local action='';
+    local pointer='';
+    local subtype='';
+
+    local firstAction='';
+    local secondAction='';
+    local limitAction=2;
+
+    local firstPointer='';
+    local secondPointer='';
+    local limitPointer=1;
+
+    # First we fill the variables according to the information received
+    __gi_global_filter_input "${@}";
+
+    if [[ -n "${error}" ]]; then
+        # @TODO - optimize errors
+        echo "${error}";
+    else
+        __gime_action_setup;
+
+        if [[ -n "${error}" ]]; then
+            # @TODO - optimize errors
+            echo "${error}";
+        else
+            __gi_global_print_execute "${action}" "${pointer}" "${subtype}" 'debug';
         fi
     fi
 }
