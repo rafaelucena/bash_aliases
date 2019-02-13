@@ -220,7 +220,7 @@ function gime () {
             # @TODO - optimize errors
             echo "${error}";
         else
-            __gi_global_print_execute "${action}" "${pointer}" "${subtype}" 'debug';
+            __gi_global_print_execute "${action}" "${pointer}" "${subtype}";# 'debug';
         fi
     fi
 }

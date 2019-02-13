@@ -475,10 +475,18 @@ function __gime_action_setup () {
         #
         '-m'|'-master')
             __gime_action_merge 'master';
-            #__gicm_action_set_commit_prefix "${firstPointer}";
             ;;
+        #
+        '-a'|'-abort')
+            __gime_action_merge '--abort';
+            ;;
+        #
+        '-l'|'-last')
+            __gime_action_merge_last;
+            ;;
+        #
         *)
-            # Super commit reading a prefix if it exists
+
             if [[ -z "${firstAction}" && -n "${firstPointer}" ]]; then
                 __gime_action_merge "${firstPointer}";
             else
@@ -492,4 +500,12 @@ function __gime_action_setup () {
 function __gime_action_merge () {
     action='merge';
     pointer="${1}";
+}
+
+function __gime_action_merge_last () {
+    if [[ -n "${GIBR_LAST_BRANCH}" ]]; then
+        __gime_action_merge ${GIBR_LAST_BRANCH};
+    else
+        error='Last branch not loaded yet';
+    fi
 }
