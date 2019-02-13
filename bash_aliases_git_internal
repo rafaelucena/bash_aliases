@@ -439,11 +439,11 @@ function __giui_action_setup () {
             ;;
         #
         '-l'|'-list')
-            #__gicm_action_get_commit_last;
+            __giui_action_list '^h';
             ;;
         #
         '-lu'|'-list-unchanged')
-            __giui_action_list_unchanged;
+            __giui_action_list '^h';
             ;;
         #
         *)
@@ -458,8 +458,8 @@ function __giui_action_unchanged () {
     pointer="${1}";
 }
 
-function __giui_action_list_unchanged () {
+function __giui_action_list () {
     action='ls-files -v';
-    pointer="grep '^h'";
+    pointer="grep '${1}'";
     subtype='pipe';
 }
