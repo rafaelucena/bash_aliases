@@ -204,6 +204,10 @@ __gi_br_action_setup () {
             __gi_br_action_new "${firstPointer}";
             ;;
         #
+        '-m'|'-master')
+            __gi_br_action_checkout 'master';
+            ;;
+        #
         '-l'|'-last')
             __gibr_action_last;
             ;;
@@ -234,6 +238,9 @@ __gi_br_action_new () {
     if [[ -n "${1}" ]]; then
         action='checkout -b';
         pointer="${1}";
+
+        GIBR_LAST_BRANCH="$(get_git_branch)";
+        GIBR_CURRENT_BRANCH=${pointer};
     else
         error='missing pointer';
     fi

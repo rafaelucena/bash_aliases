@@ -114,7 +114,7 @@ gipx () {
 # LOCAL VARIABLES FIXED
 # PRINT COMMAND FIXED
 # COMMENTS @TODO
-gibr () {
+function gibr () {
     local error='';
     local question='';
     local action='';

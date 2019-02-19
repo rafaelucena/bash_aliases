@@ -1,0 +1,13 @@
+[general]
+error=''
+question=''
+action=''
+pointer=''
+
+firstAction=''
+secondAction=''
+limitAction=2
+
+firstPointer=''
+secondPointer=''
+limitPointer=1
