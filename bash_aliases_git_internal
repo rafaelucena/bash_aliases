@@ -321,6 +321,10 @@ function __gicm_action_setup () {
         '-m'|'-message')
             __gicm_action_commit "${firstPointer}";
             ;;
+        #
+        '-a'|'-amend')
+            __gicm_action_amend;
+            ;;
         # Clear all the global variables for the GICM command
         '-c'|'-clear')
             __gicm_action_cache_clear "${firstAction}";
@@ -370,6 +374,11 @@ function __gicm_action_commit() {
 #    echo "${action} ${pointer}";
 }
 
+function __gicm_action_amend() {
+    action='commit';
+    pointer='--amend';
+}
+
 function __gicm_action_set_commit_prefix() {
     if [ -n "${1}" ]; then
         GICM_COMMIT_PREFIX="${1}";
@@ -386,7 +395,7 @@ function __gicm_action_set_commit_prefix() {
 function __gicm_action_commit_prefix() {
     if [ -n "${1}" ]; then
         local commitMsg='';
-        if [ -n "${GICM_COMMIT_PREFIX}" ]; then
+        if [[ -n "${GICM_COMMIT_PREFIX}" ]]; then
             commitMsg="${GICM_COMMIT_PREFIX} (${1})";
 
             if [[ -n "${GICM_COMMIT_PREFIX_BRANCH}" && "${GICM_COMMIT_PREFIX_BRANCH}" != "$(get_git_branch)" ]]; then
