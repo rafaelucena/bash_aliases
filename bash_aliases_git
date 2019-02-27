@@ -12,11 +12,12 @@ alias gist='git status';
 # LOCAL VARIABLES FIXED
 # PRINT COMMAND FIXED
 # COMMENTS @TODO
-gicm () {
+function gicm () {
     local error='';
     local question='';
     local action='';
     local pointer='';
+    local auxiliary='';
 
     local firstAction='';
     local secondAction='';

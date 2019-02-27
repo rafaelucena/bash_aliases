@@ -164,16 +164,20 @@ function __gi_global_print () {
 
     case "${subtype}" in
         'pipe')
-            print_command="$(dye cyan)${execute}$(dye undye) $(dye red)${action}$(dye undye) | $(dye orange)${pointer}$(dye undye);";
+            print_command="$(dye cyan)${execute}$(dye undye) $(dye red)${action}$(dye undye) | $(dye orange)${pointer}$(dye undye)";
             ;;
         *)
             if [[ -n "${pointer}" ]]; then
-                print_command="$(dye cyan)${execute}$(dye undye) $(dye red)${action}$(dye undye) $(dye orange)${pointer}$(dye undye);";
+                print_command="$(dye cyan)${execute}$(dye undye) $(dye red)${action}$(dye undye) $(dye orange)${pointer}$(dye undye)";
             else
-                print_command="$(dye cyan)${execute}$(dye undye) $(dye green)${action}$(dye undye);";
+                print_command="$(dye cyan)${execute}$(dye undye) $(dye green)${action}$(dye undye)";
             fi
             ;;
     esac
+
+    if [[ "${auxiliary}" ]]; then
+        print_command="${print_command} ${auxiliary}";
+    fi
 
     echo -e "${print_command}";
 }
@@ -183,13 +187,21 @@ function __gi_global_execute () {
 
     case "${subtype}" in
         'pipe')
-            ${execute} ${action} | eval ${pointer};
+            ${execute} ${action} "${auxiliary}" | eval ${pointer};
             ;;
         *)
             if [[ -n "${pointer}" ]]; then
-                ${execute} ${action} "${pointer}";
+                if [[ -n "${auxiliary}" ]]; then
+                    ${execute} ${action} "${pointer}" ${auxiliary};
+                else
+                    ${execute} ${action} "${pointer}";
+                fi
             else
-                ${execute} ${action};
+                if [[ -n "${auxiliary}" ]]; then
+                    ${execute} ${action} ${auxiliary};
+                else
+                    ${execute} ${action};
+                fi
             fi
             ;;
     esac
@@ -316,6 +328,18 @@ function __gicm_global_setup() {
 function __gicm_action_setup () {
     local secondAction="${secondAction}";
 
+    case "${secondAction}" in
+        '-n')
+            __gicm_action_auxiliary 'secondAction';
+        ;;
+    esac
+
+    case "${firstAction}" in
+        '-n')
+            __gicm_action_auxiliary 'firstAction';
+        ;;
+    esac
+
     case "${firstAction}" in
         # Create a new commit with the common standard
         '-m'|'-message')
@@ -352,6 +376,19 @@ function __gicm_action_setup () {
             fi
 
             ;;
+    esac
+}
+
+function __gicm_action_auxiliary() {
+    auxiliary='-n';
+
+    case "${1}" in
+        'firstAction')
+            firstAction='';
+        ;;
+        'secondAction')
+            secondAction='';
+        ;;
     esac
 }
 
