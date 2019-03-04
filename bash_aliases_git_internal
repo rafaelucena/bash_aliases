@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 #
 __print_command () {
     local print_command='';
@@ -573,4 +574,45 @@ function __gime_action_merge_last () {
     else
         error='Last branch not loaded yet';
     fi
+}
+
+### GIBK functions
+function __gibk_action_setup () {
+    case "${firstAction}" in
+        #
+        '-v'|'-view')
+            __gibk_action_view;
+            ;;
+        #
+        '-s'|'-save')
+            __gibk_action_save;
+            ;;
+        #
+        '-l'|'-last')
+            # __gime_action_merge_last;
+            ;;
+        #
+        *)
+            if [[ -z "${firstAction}" && -n "${firstPointer}" ]]; then
+                 __gibk_action_apply "${firstPointer}";
+            else
+                # @TODO - gicm without parameters will output usage
+                echo 'eitas';
+            fi
+            ;;
+    esac
+}
+
+function __gibk_action_view () {
+    action='stash list';
+}
+
+function __gibk_action_save () {
+    action='stash save';
+    pointer="${firstPointer}";
+}
+
+function __gibk_action_apply () {
+    action='stash apply';
+    pointer="stash@{${1}}";
 }
