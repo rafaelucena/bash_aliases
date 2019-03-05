@@ -584,6 +584,10 @@ function __gibk_action_setup () {
             __gibk_action_view;
             ;;
         #
+        '-d'|'-delete'|'-drop')
+            __gibk_action_delete "${firstPointer}";
+            ;;
+        #
         '-s'|'-save')
             __gibk_action_save;
             ;;
@@ -605,6 +609,12 @@ function __gibk_action_setup () {
 
 function __gibk_action_view () {
     action='stash list';
+}
+
+function __gibk_action_delete () {
+    action='stash drop';
+    pointer="stash@{${1}}";
+    question="Are you sure you want to remove the stash $(dye orange)${pointer}$(dye undye)?";
 }
 
 function __gibk_action_save () {

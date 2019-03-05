@@ -229,6 +229,7 @@ function gime () {
 #
 function gibk () {
     local error='';
+    local question='';
     local action='';
     local pointer='';
     local subtype='';
@@ -254,6 +255,18 @@ function gibk () {
             # @TODO - optimize errors
             echo "${error}";
         else
+            if [[ -n "${question}" ]]; then
+                local answer='';
+
+                read -p "$(echo -e ${question})" -n 1 -r answer
+                echo    # (optional) move to a new line
+                if [[ "${answer}" =~ ^[Yy]$ ]]; then
+                    true;
+                else
+                    return;
+                fi
+            fi
+
             __gi_global_print_execute "${action}" "${pointer}" "${subtype}";# 'debug';
         fi
     fi
