@@ -176,8 +176,8 @@ function __gi_global_print () {
             ;;
     esac
 
-    if [[ "${auxiliary}" ]]; then
-        print_command="${print_command} ${auxiliary}";
+    if [[ "${ancillary}" ]]; then
+        print_command="${print_command} ${ancillary}";
     fi
 
     echo -e "${print_command}";
@@ -188,18 +188,18 @@ function __gi_global_execute () {
 
     case "${subtype}" in
         'pipe')
-            ${execute} ${action} "${auxiliary}" | eval ${pointer};
+            ${execute} ${action} "${ancillary}" | eval ${pointer};
             ;;
         *)
             if [[ -n "${pointer}" ]]; then
-                if [[ -n "${auxiliary}" ]]; then
-                    ${execute} ${action} "${pointer}" ${auxiliary};
+                if [[ -n "${ancillary}" ]]; then
+                    ${execute} ${action} "${pointer}" ${ancillary};
                 else
                     ${execute} ${action} "${pointer}";
                 fi
             else
-                if [[ -n "${auxiliary}" ]]; then
-                    ${execute} ${action} ${auxiliary};
+                if [[ -n "${ancillary}" ]]; then
+                    ${execute} ${action} ${ancillary};
                 else
                     ${execute} ${action};
                 fi
@@ -331,13 +331,13 @@ function __gicm_action_setup () {
 
     case "${secondAction}" in
         '-n')
-            __gicm_action_auxiliary 'secondAction';
+            __gicm_action_ancillary 'secondAction';
         ;;
     esac
 
     case "${firstAction}" in
         '-n')
-            __gicm_action_auxiliary 'firstAction';
+            __gicm_action_ancillary 'firstAction';
         ;;
     esac
 
@@ -380,8 +380,8 @@ function __gicm_action_setup () {
     esac
 }
 
-function __gicm_action_auxiliary() {
-    auxiliary='-n';
+function __gicm_action_ancillary() {
+    ancillary='-n';
 
     case "${1}" in
         'firstAction')

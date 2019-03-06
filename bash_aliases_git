@@ -17,7 +17,7 @@ function gicm () {
     local question='';
     local action='';
     local pointer='';
-    local auxiliary='';
+    local ancillary='';
 
     local firstAction='';
     local secondAction='';
