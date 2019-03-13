@@ -272,8 +272,13 @@ function __gibr_action_last () {
 }
 
 __gi_br_action_list_up () {
-    action='branch';
+    case "${thirdAction}" in
+        '-m')
+            pointer='--merged';
+        ;;
+    esac
 
+    action='branch';
     case "${1}" in
         '-l'|'-local'|'-list')
             pointer='-l';
@@ -283,6 +288,9 @@ __gi_br_action_list_up () {
             ;;
         '-a'|'-all')
             pointer='-a';
+            ;;
+        '-m'|'-merged')
+            pointer='--merged';
             ;;
     esac
 }
