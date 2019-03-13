@@ -233,6 +233,10 @@ __gi_br_action_setup () {
             # ${firstAction} and ${firstPointer} are necessary here
             __gi_br_action_delete_up "${secondAction}" "${firstPointer}";
             ;;
+        '-g'|'-grep')
+            #
+            __gibr_action_checkout_grep "${firstPointer}";
+            ;;
         *)
             # Checking out branches
             if [[ -z "${firstAction}" && -n "${firstPointer}" ]]; then
@@ -316,6 +320,16 @@ __gi_br_action_checkout () {
 
     GIBR_LAST_BRANCH="$(get_git_branch)";
     GIBR_CURRENT_BRANCH=${pointer};
+}
+
+function __gibr_action_checkout_grep () {
+    pointer=$(git branch -l | grep "${1}");
+
+    if [[ -z "${pointer}" ]]; then
+        error='Local branch not found';
+    fi
+
+    __gi_br_action_checkout ${pointer};
 }
 
 ## GICM FUNCTIONS
