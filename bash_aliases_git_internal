@@ -221,11 +221,11 @@ __gi_br_action_setup () {
             __gi_br_action_checkout 'master';
             ;;
         #
-        '-l'|'-last')
-            __gibr_action_last;
+        '-r'|'-recent')
+            __gibr_action_recent;
             ;;
         # Listing branches
-        '-v'|'-view')
+        '-l'|'-list')
             # Only ${firstAction} is necessary here
             __gi_br_action_list_up "${secondAction}";
             ;;
@@ -263,7 +263,7 @@ __gi_br_action_new () {
     fi
 }
 
-function __gibr_action_last () {
+function __gibr_action_recent () {
     if [[ -n "${GIBR_LAST_BRANCH}" ]]; then
         __gi_br_action_checkout "${GIBR_LAST_BRANCH}";
     else
