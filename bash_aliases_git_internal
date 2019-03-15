@@ -603,8 +603,8 @@ function __gime_action_merge_last () {
 function __gibk_action_setup () {
     case "${firstAction}" in
         #
-        '-v'|'-view')
-            __gibk_action_view;
+        '-l'|'-list')
+            __gibk_action_list;
             ;;
         #
         '-d'|'-delete'|'-drop')
@@ -615,7 +615,7 @@ function __gibk_action_setup () {
             __gibk_action_save;
             ;;
         #
-        '-l'|'-last')
+        '-r'|'-recent')
             # __gime_action_merge_last;
             ;;
         #
@@ -630,7 +630,7 @@ function __gibk_action_setup () {
     esac
 }
 
-function __gibk_action_view () {
+function __gibk_action_list () {
     action='stash list';
 }
 
