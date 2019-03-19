@@ -381,8 +381,8 @@ function __gicm_action_setup () {
             __gicm_action_set_commit_prefix "${firstPointer}";
             ;;
         # Execute the last known commit, if it exists
-        '-l'|'-last')
-            __gicm_action_get_commit_last;
+        '-r'|'-recent')
+            __gicm_action_get_commit_recent;
             ;;
         # View defined global variables for the GICM command
         '-v'|'-view')
@@ -471,7 +471,7 @@ function __gicm_action_commit_prefix() {
     fi
 }
 
-function __gicm_action_get_commit_last() {
+function __gicm_action_get_commit_recent() {
     if [ -n "${GICM_COMMIT_LAST}" ]; then
         if [[ -n "${GICM_COMMIT_LAST_BRANCH}" && "${GICM_COMMIT_LAST_BRANCH}" != "$(get_git_branch)" ]]; then
             question='The last commit was made on another branch, are you sure you want to continue?';
@@ -485,7 +485,7 @@ function __gicm_action_get_commit_last() {
 }
 
 function __gicm_action_get_commit_view() {
-    if [[ -z "${1}" || ("${1}" == '-l' || "${1}" == '-last') ]]; then
+    if [[ -z "${1}" || ("${1}" == '-r' || "${1}" == '-recent') ]]; then
         echo "Last commit: ${GICM_COMMIT_LAST} on ${GICM_COMMIT_LAST_BRANCH}";
     fi
 
@@ -569,8 +569,8 @@ function __gime_action_setup () {
             __gime_action_merge '--abort';
             ;;
         #
-        '-l'|'-last')
-            __gime_action_merge_last;
+        '-r'|'-recent')
+            __gime_action_merge_recent;
             ;;
         #
         *)
@@ -590,7 +590,7 @@ function __gime_action_merge () {
     pointer="${1}";
 }
 
-function __gime_action_merge_last () {
+function __gime_action_merge_recent () {
     if [[ -n "${GIBR_LAST_BRANCH}" ]]; then
         __gime_action_merge ${GIBR_LAST_BRANCH};
         question="Are you sure you want to merge the last branch: $(dye orange)${GIBR_LAST_BRANCH}$(dye undye) to this one?";
