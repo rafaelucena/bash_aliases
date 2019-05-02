@@ -210,6 +210,20 @@ function __gi_global_execute () {
 
 ## GI_BR FUNCTIONS 3.0
 __gi_br_action_setup () {
+    local secondAction="${secondAction}";
+
+    case "${secondAction}" in
+        '-g'|'-grep')
+            __gibr_action_ancillary 'secondAction';
+        ;;
+    esac
+
+    case "${firstAction}" in
+        '-g'|'-grep')
+            __gibr_action_ancillary 'firstAction';
+        ;;
+    esac
+
     case "${firstAction}" in
         # Creating a new branch
         '-n'|'-new')
@@ -233,10 +247,9 @@ __gi_br_action_setup () {
             # ${firstAction} and ${firstPointer} are necessary here
             __gi_br_action_delete_up "${secondAction}" "${firstPointer}";
             ;;
-        '-g'|'-grep')
-            #
-            __gibr_action_checkout_grep "${firstPointer}";
-            ;;
+#        '-g'|'-grep')
+#            __gibr_action_checkout_grep "${firstPointer}";
+#            ;;
         *)
             # Checking out branches
             if [[ -z "${firstAction}" && -n "${firstPointer}" ]]; then
@@ -248,6 +261,31 @@ __gi_br_action_setup () {
             fi
 
             ;;
+    esac
+}
+
+function __gibr_action_ancillary() {
+    ancillary='';
+
+    if [[ -n "${firstPointer}" ]]; then
+        firstPointer=$(git branch -l | grep "${firstPointer}" | head -n 1);
+        # Remove whitespaces before the string
+        firstPointer=${firstPointer##*( )};
+
+        if [[ -z "${firstPointer}" ]]; then
+            error='Local branch not found';
+        fi
+    else
+         error='Pointer not filled';
+    fi
+
+    case "${1}" in
+        'firstAction')
+            firstAction='';
+        ;;
+        'secondAction')
+            secondAction='';
+        ;;
     esac
 }
 
@@ -328,16 +366,6 @@ __gi_br_action_checkout () {
 
     GIBR_LAST_BRANCH="$(get_git_branch)";
     GIBR_CURRENT_BRANCH=${pointer};
-}
-
-function __gibr_action_checkout_grep () {
-    pointer=$(git branch -l | grep "${1}");
-
-    if [[ -z "${pointer}" ]]; then
-        error='Local branch not found';
-    fi
-
-    __gi_br_action_checkout ${pointer};
 }
 
 ## GICM FUNCTIONS
