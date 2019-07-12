@@ -293,9 +293,6 @@ __gi_br_action_new () {
     if [[ -n "${1}" ]]; then
         action='checkout -b';
         pointer="${1}";
-
-        GIBR_LAST_BRANCH="$(get_git_branch)";
-        GIBR_CURRENT_BRANCH=${pointer};
     else
         error='missing pointer';
     fi
@@ -363,9 +360,18 @@ __gi_br_helper_pointer () {
 __gi_br_action_checkout () {
     action='checkout';
     pointer="${1}";
+}
 
-    GIBR_LAST_BRANCH="$(get_git_branch)";
-    GIBR_CURRENT_BRANCH=${pointer};
+function __gibr_set_branches () {
+    local lastCheckout="$(git reflog -1 | grep ' checkout:' | head -n 1)";
+
+    if [[ -n "${lastCheckout}" ]]; then
+        local currentBranch="$(echo $lastCheckout | grep -oP ' to (.+)$')";
+        local lastBranch="$(echo $lastCheckout | grep -oP ' from .* to ')";
+
+        GIBR_CURRENT_BRANCH="${currentBranch:3}";
+        GIBR_LAST_BRANCH="${lastBranch:6:-4}";
+    fi
 }
 
 ## GICM FUNCTIONS

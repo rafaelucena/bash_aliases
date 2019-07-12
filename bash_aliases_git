@@ -158,6 +158,7 @@ function gibr () {
 
             # If no errors were found, we keep on to execution passing only the usable variables
             __gi_global_print_execute "${action}" "${pointer}";# '' 'debug';
+            __gibr_set_branches;
         fi
     fi
 }
