@@ -4,7 +4,7 @@ __print_command () {
     local print_command='';
 
     if [[ -n $pointer ]]; then
-        print_command="$(dye cyan)$1$(dye undye) $(dye red)$action$(dye undye) $(dye orange)$pointer$(dye undye);";
+        print_command="$(dye cyan)$1$(dye undye) $(dye green)$action$(dye undye) $(dye orange)$pointer$(dye undye);";
     else
         print_command="$(dye cyan)$1$(dye undye) $(dye green)$action$(dye undye);";
     fi
@@ -48,7 +48,7 @@ __global_print () {
     local print_command='';
 
     if [[ -n "${3}" ]]; then
-        print_command="$(dye cyan)${1}$(dye undye) $(dye red)${2}$(dye undye) $(dye orange)${3}$(dye undye);";
+        print_command="$(dye cyan)${1}$(dye undye) $(dye green)${2}$(dye undye) $(dye orange)${3}$(dye undye);";
     else
         print_command="$(dye cyan)${1}$(dye undye) $(dye green)${2}$(dye undye);";
     fi
@@ -169,7 +169,7 @@ function __gi_global_print () {
             ;;
         *)
             if [[ -n "${pointer}" ]]; then
-                print_command="$(dye cyan)${execute}$(dye undye) $(dye red)${action}$(dye undye) $(dye orange)${pointer}$(dye undye)";
+                print_command="$(dye cyan)${execute}$(dye undye) $(dye green)${action}$(dye undye) $(dye orange)${pointer}$(dye undye)";
             else
                 print_command="$(dye cyan)${execute}$(dye undye) $(dye green)${action}$(dye undye)";
             fi
