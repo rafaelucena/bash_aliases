@@ -683,3 +683,28 @@ function __gibk_action_apply () {
     action='stash apply';
     pointer="stash@{${1}}";
 }
+
+### GILG functions
+function __gilg_action_setup() {
+    ancillary='--no-merges';
+
+    case "${firstAction}" in
+        #
+        *)
+            local logPattern='^-?[0-9]+$'
+            if [[ "${firstAction}" =~ $logPattern ]] ; then
+                __gilg_action_list "${firstAction}";
+            elif [[ "${firstPointer}" =~ $logPattern ]]; then
+                __gilg_action_list "${firstPointer}";
+            else
+                # @TODO - gilg without parameters will output usage
+                echo 'eitas';
+            fi
+            ;;
+    esac
+}
+
+function __gilg_action_list() {
+    action='log';
+    pointer="-$(echo ${1} | grep -oP '[0-9]+')";
+}
