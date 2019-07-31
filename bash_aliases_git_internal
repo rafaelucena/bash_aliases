@@ -698,8 +698,6 @@ function __gilg_action_setup() {
             local logPattern='^-?[0-9]+$'
             if [[ "${firstAction}" =~ $logPattern ]] ; then
                 __gilg_action_list "${firstAction}";
-            elif [[ -z "${firstAction}" && "${firstPointer}" =~ $logPattern ]]; then
-                __gilg_action_list "${firstPointer}";
             else
                 # @TODO - gilg without parameters will output usage
                 echo 'eitas';
@@ -708,12 +706,15 @@ function __gilg_action_setup() {
     esac
 
     case "${secondAction}" in
+        #
+        '-g'|'-grep')
+            __gilg_action_grep "${firstPointer}";
+            ;;
+        #
         *)
             local logPattern='^-?[0-9]+$'
             if [[ "${secondAction}" =~ $logPattern ]] ; then
                 __gilg_action_list "${secondAction}";
-            elif [[ "${secondPointer}" =~ $logPattern ]]; then
-                __gilg_action_list "${secondPointer}";
             fi
             ;;
     esac
@@ -721,9 +722,11 @@ function __gilg_action_setup() {
 
 function __gilg_action_list() {
     action='log';
-    if [[ "" ]]
-
-    pointer="${pointer} -$(echo ${1} | grep -oP '[0-9]+')";
+#    if [[ -z "${pointer}" ]]; then
+#        pointer="-$(echo ${1} | grep -oP '[0-9]+')";
+#    else
+        ancillary="-$(echo ${1} | grep -oP '[0-9]+') ${ancillary}";
+#    fi
 }
 
 function __gilg_action_grep() {
