@@ -686,7 +686,8 @@ function __gibk_action_apply () {
 
 ### GILG functions
 function __gilg_action_setup() {
-    ancillary='--no-merges';
+    action='log';
+    ancillary='--no-merges --pretty=format:%C(yellow)%h%Creset|%C(red)%ad%Creset|%C(yellow)%an%Creset:%s --date=short';
 
     case "${firstAction}" in
         #
@@ -694,6 +695,9 @@ function __gilg_action_setup() {
             __gilg_action_grep "${firstPointer}";
             ;;
         #
+        '-o'|'-oneline')
+            __gilg_action_oneline;
+            ;;
         *)
             local logPattern='^-?[0-9]+$'
             if [[ "${firstAction}" =~ $logPattern ]] ; then
@@ -711,6 +715,10 @@ function __gilg_action_setup() {
             __gilg_action_grep "${firstPointer}";
             ;;
         #
+        '-o'|'-oneline')
+            __gilg_action_oneline;
+            ;;
+        #
         *)
             local logPattern='^-?[0-9]+$'
             if [[ "${secondAction}" =~ $logPattern ]] ; then
@@ -721,7 +729,6 @@ function __gilg_action_setup() {
 }
 
 function __gilg_action_list() {
-    action='log';
 #    if [[ -z "${pointer}" ]]; then
 #        pointer="-$(echo ${1} | grep -oP '[0-9]+')";
 #    else
@@ -730,6 +737,9 @@ function __gilg_action_list() {
 }
 
 function __gilg_action_grep() {
-    action='log';
     pointer="--grep=${1}";
+}
+
+function __gilg_action_oneline() {
+    ancillary="--oneline ${ancillary}";
 }
