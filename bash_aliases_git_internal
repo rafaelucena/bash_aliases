@@ -591,7 +591,7 @@ function __giui_action_list () {
 
 ### GIME functions
 function __gime_action_setup () {
-    local secondAction="${secondAction}";
+    ancillary='--quiet';
 
     case "${firstAction}" in
         #

@@ -203,6 +203,7 @@ function gime () {
     local action='';
     local pointer='';
     local subtype='';
+    local ancillary='';
 
     local firstAction='';
     local secondAction='';
