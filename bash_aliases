@@ -11,14 +11,19 @@ if [ -f ~/.bash_aliases_git ]; then
 fi
 
 # for ignoring certain commands to appear on history, add colon to separate commands
-HISTIGNORE='git status:gis:git pull:gip:clear:exit:ls'
+HISTIGNORE='git status:gist:git pull:gipu:clear:exit:ls:'
+
+get_git_commit () {
+    git rev-parse --short HEAD;
+}
 
 # enable GIT BRANCH to display on command line
-get_git_branch () {
+function get_git_branch () {
     #git symbolic-ref --short HEAD;
 
     local branchPrefix='';
     local branchSufix='';
+#    local branchName="$(git rev-parse --symbolic-full-name --abbrev-ref HEAD)";
 
     case $1 in
         'type_a')
@@ -37,11 +42,33 @@ get_git_branch () {
             ;;
     esac
 
+    if [[ -n "${1}" ]]; then
+        branchName="$(__shortGitBranchName)";
+    fi
+
+#    echo "${branchPrefix}${branchName}${branchSufix}";
     git branch 2> /dev/null | sed -e '/^[^*]/d' -e "s/* \(.*\)/$branchPrefix\1$branchSufix/";
 }
+
+function __shortGitBranchName() {
+    branchName="${branchName}";
+
+    if [[ -n "${branchName}" ]]; then
+        shortBranchName="$(echo "${branchName}" | grep -oP "^.*?(\d+)")";
+        if [[ -n "${shortBranchName}" && "${#shortBranchName}" < "${#branchName}" ]]; then
+            echo "${shortBranchName}...";
+            return;
+        fi
+    fi
+
+    echo "${branchName}";
+    return;
+}
+
 export PS1="\[\033[01;32m\]\u \[\033[01;34m\]\w\[\033[01;33m\]\$(get_git_branch type_b)\[\033[00m\] $ "
 
 # quick directory movement
+alias phpx='php -dxdebug.remote_autostart=On';
 alias ..='cd ..';
 alias ...='cd ../..';
 alias ....='cd ../../..';
@@ -122,8 +149,10 @@ function dye {
     echo $color;
 }
 
-readonly GOTO_MAP_FILE='/home/user/.goto_map.xml';
-readonly GOTO_TEST_FILE='/home/user/test.xml';
+#readonly GOTO_MAP_FILE='/home/user/.goto_map.xml';
+#readonly GOTO_TEST_FILE='/home/user/test.xml';
+readonly GOTO_MAP_FILE='/home/b4b06/.goto_map.xml';
+readonly GOTO_TEST_FILE='/home/b4b06/test.xml';
 
 function goto () {
     tags=($(grep -oP '(?<=tag>)[^<]+' ${GOTO_MAP_FILE}))
@@ -162,45 +191,31 @@ function _mapme_test () {
 
 function readConfigFileTest()
 {
-    local continue=0;
-    local -a vars;
-    vars[0]="\[general\]";
-    vars[1]='\[carambola\]';
-#  section="$1"
-#  found=false
-#  while read line
-#  do
-#    [[ $found == false && "$line" != "[$section]" ]] &&  continue
-#    [[ $found == true && "${line:0:1}" = '[' ]] && break
-#    found=true
-#    echo "$line"
-#  done < /home/b4b06/test.txt
-
-    while read var value
+    local -a paramsArray
+    local -a param
+    local paramsString=$(__gi_global_load_params 'gibr')
+    #Breaking lines into array
+    IFS=$'\n' read -rd '' -a paramsArray <<< "${paramsString}"
+    for i in "${!paramsArray[@]}"
     do
-        local pattern="\[\w+\]";
-        if [[ "${var}" =~ $pattern ]]; then
-            if [[ "${var}" =~ ${vars[0]} || "${var}" =~ ${vars[1]} ]]; then
-                continue=1;
-            else
-                continue=0;
-            fi
+        #Breaking line into array
+        IFS='=' read -ra param <<< "${paramsArray[$i]}"
+        if [[ -n ${param[0]} && -n ${param[1]} ]]; then
+            local ${param[0]}="${param[1]}"
         fi
+    done
 
-        if [[ "${continue}" == 1 ]]; then
-            IFS='=' read -ra ADDR <<< "$var"
-            if [[ -n ${ADDR[0]} && -n ${ADDR[1]} ]]; then
-                local "${ADDR[0]}"="${ADDR[1]}";
-                echo "Variable: ${ADDR[0]} with value: ${ADDR[1]}";
-            fi
-        fi
-#        for i in "${ADDR[@]}"; do
-#            echo "$i"eita
-#        done
-#        echo "$var"
-#        echo "$var"="$value"
-#        export "$var"="$value"
-    done < /home/b4b06/test.txt
+    echo "sera que deu ${limitAction}";
+}
 
-    echo "sera que deu $eita";
+function readLinesTest()
+{
+#    local var_name=$(git branch --merged)
+    for var_name in $(git branch --merged); do
+#    for var_name in $(git branch -l | grep 'test'); do
+
+        echo "Counting $var_name..."
+    done
+    echo "$var_name"
+    git branch --merged
 }

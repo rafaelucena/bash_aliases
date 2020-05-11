@@ -4,5 +4,21 @@
       <tag>local</tag>
       <path>/home</path>
     </local>
+    <local>
+      <tag>app</tag>
+      <path>/home/b4b06/Projects/work/sof3</path>
+    </local>
+    <local>
+      <tag>bmkg</tag>
+      <path>/home/b4b06/Projects/work/sof3/backend/application/MKG</path>
+    </local>
+    <local>
+      <tag>aliases</tag>
+      <path>/home/b4b06/Projects/own/aliases</path>
+    </local>
+    <local>
+      <tag>crons</tag>
+      <path>/home/b4b06/Projects/work/sof3/backend/public</path>
+    </local>
   </php>
 </goto_map>
